@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { RegisterComponent } from './register/register.component';
-
+import { RouterModule } from '@angular/router';
+import { AppModule } from './app.module';
 @Component({
+  // standalone: true,
   selector: 'app-root',
-  template: `<app-register></app-register>`,
-  standalone: true,
-  imports: [RegisterComponent]
+  template: '<router-outlet></router-outlet>',
+  // imports: [RouterModule]
 })
+
 export class AppComponent {
   title(title: any) {
     throw new Error('Method not implemented.');

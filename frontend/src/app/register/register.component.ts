@@ -3,11 +3,11 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 
 @Component({
+  // standalone: true,
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  // imports: [CommonModule, ReactiveFormsModule]
 })
 export class RegisterComponent {
   registerForm: FormGroup;
