@@ -7,4 +7,16 @@ module.exports = class User {
         this.phoneNumber = phoneNumber;
         this.password = password;
     }
+
+    static find(email){
+        return db.execute('SELECT * FROM users WHERE email = ?', [email]);
+    }
+
+    static save(user) {
+        return db.execute( 
+            'INSERT INTO users (name, email, password) VALUES (?, ? ,?)', 
+            [user.name, user.email, user.password]
+        );
+    }
 };
+
