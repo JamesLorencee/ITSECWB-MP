@@ -53,6 +53,7 @@ export class RegisterComponent {
 
   upload() {
     const file = this.registerForm.get('profilePhoto')?.value;
+    console.log(file);
 
     if (file) {
       this.authService.upload(file).subscribe({
@@ -75,7 +76,6 @@ export class RegisterComponent {
     }
 
     const formData = new FormData();
-    this.upload();
     formData.append('name', this.registerForm.get('name')?.value);
     formData.append('email', this.registerForm.get('email')?.value);
     formData.append('phoneNumber', this.registerForm.get('phone')?.value);
@@ -84,7 +84,9 @@ export class RegisterComponent {
       'photoFileName',
       this.registerForm.get('photoFileName')?.value
     );
-
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
     this.authService.signup(formData).subscribe({
       next: (response) => {
         this.successMessage = response.message;

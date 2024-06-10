@@ -17,6 +17,6 @@ export class AuthService {
   upload(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('profilePhoto', file, file.name);
-    return this.http.post('/api/upload', formData);
+    return this.http.post(`${this.baseUrl}/api/upload`, formData);
   }
 }

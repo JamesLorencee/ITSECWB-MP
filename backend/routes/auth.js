@@ -1,5 +1,9 @@
 const express = require("express");
 
+const multipart = require("connect-multiparty");
+const multipartMiddleware = multipart({ uploadDir: "../frontend/uploads" });
+const path = require("path");
+
 const { body } = require("express-validator");
 
 const router = express.Router();
@@ -45,5 +49,11 @@ router.post(
   ],
   authController.signup
 );
+
+router.post("/api/upload", multipartMiddleware, (req, res) => {
+  const file = req.files.profilePhoto;
+  const filePath = path.join("uploads", file.path.split("/").pop());
+  res.json({ filePath: filePath });
+});
 
 module.exports = router;
