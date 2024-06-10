@@ -52,14 +52,15 @@ export class RegisterComponent {
   }
 
   upload() {
+    this.submitted = true;
     const file = this.registerForm.get('profilePhoto')?.value;
     console.log(file);
 
     if (file) {
       this.authService.upload(file).subscribe({
         next: (response) => {
-          this.registerForm.patchValue({ photoFileName: response.filePath });
-          this.onSubmit();
+          console.log(response)
+          this.onSubmit(response.filePath);
         },
         error: (error) => {
           console.error('Error uploading profile photo:', error);
@@ -68,26 +69,13 @@ export class RegisterComponent {
     }
   }
 
-  onSubmit() {
+  onSubmit(filePath: string) {
     this.submitted = true;
 
-    if (this.registerForm.invalid) {
-      return;
-    }
+    if (this.registerForm.invalid) return;
 
-    const formData = new FormData();
-    formData.append('name', this.registerForm.get('name')?.value);
-    formData.append('email', this.registerForm.get('email')?.value);
-    formData.append('phoneNumber', this.registerForm.get('phone')?.value);
-    formData.append('password', this.registerForm.get('password')?.value);
-    formData.append(
-      'photoFileName',
-      this.registerForm.get('photoFileName')?.value
-    );
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
-    this.authService.signup(formData).subscribe({
+    console.log(this.registerForm.value)
+    this.authService.signup({...this.registerForm.value, "photoFileName": filePath}).subscribe({
       next: (response) => {
         this.successMessage = response.message;
       },
