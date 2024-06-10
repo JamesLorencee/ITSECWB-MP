@@ -23,6 +23,25 @@ router.post(
       })
       .normalizeEmail(),
     body("password").trim().isLength({ min: 12 }),
+    body("phoneNumber")
+      .trim()
+      .isLength({ min: 11, max: 11 })
+      .withMessage("Phone number must be exactly 11 digits.")
+      .isNumeric()
+      .withMessage("Phone number must contain only digits."),
+    body("photoFileName")
+      .trim()
+      .not()
+      .isEmpty()
+      .withMessage("Photo is required.")
+      .custom((value) => {
+        const valid = [".jpg", ".jpeg", ".png"];
+        const extension = value.slice(value.lastIndexOf(".")).toLowerCase();
+        if (!valid.includes(extension)) {
+          throw new Error("Invalid file.");
+        }
+        return true;
+      }),
   ],
   authController.signup
 );
