@@ -8,6 +8,15 @@ const User = require("../models/user");
 const authController = require("../controllers/auth");
 
 router.post(
+  "/signin",
+  [
+    body("email").isEmail().normalizeEmail(),
+    body("password").trim().isLength({ min: 12 }),
+  ],
+  authController.signin
+);
+
+router.post(
   "/signup",
   [
     body("name").trim().not().isEmpty(),
@@ -16,15 +25,13 @@ router.post(
       .withMessage("Please enter a valid email.")
       .custom(async (email) => {
         const user = await User.find(email);
-
         if (user) return Promise.reject("Please enter a valid email.");
-      }
-    )
+      })
       .normalizeEmail(),
     body("password").trim().isLength({ min: 12 }),
     body("phone")
       .trim()
-        .matches(/^\d{11}$/)
+      .matches(/^\d{11}$/)
       .withMessage("Phone number must be exactly 11 digits."),
     body("photoFileName")
       .trim()

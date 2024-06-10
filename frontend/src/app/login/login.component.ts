@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   // standalone: true,
@@ -13,12 +15,18 @@ import { ReactiveFormsModule } from '@angular/forms';
 export class LoginComponent {
   loginForm: FormGroup;
   submitted = false;
+  errorMessage: string = '';
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
+    console.log(this.authService.getToken());
   }
 
   ngOnInit(): void {}
@@ -34,7 +42,21 @@ export class LoginComponent {
       return;
     }
 
-    // Handle successful login here
-    console.log('Form Submitted', this.loginForm.value);
+    this.authService
+      .signin(this.loginForm.value.email, this.loginForm.value.password)
+      .subscribe({
+        next: (response) => {
+          localStorage.setItem('token', response.token);
+          this.errorMessage = '';
+          // this.router.navigate(['/home']);
+          console.log('Successful login');
+          console.log(this.authService.getToken());
+          this.authService.signout();
+        },
+        error: (error) => {
+          this.errorMessage = 'Invalid username or password';
+          console.error('Error:', error);
+        },
+      });
   }
 }

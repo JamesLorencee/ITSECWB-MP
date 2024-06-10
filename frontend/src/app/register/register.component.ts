@@ -72,14 +72,16 @@ export class RegisterComponent {
 
     if (this.registerForm.invalid) return;
 
-    this.authService.signup({...this.registerForm.value, "photoFileName": filePath}).subscribe({
-      next: (response) => {
-        this.successMessage = response.message;
-      },
-      error: (error) => {
-        console.error('Error:', error);
-      },
-    });
+    this.authService
+      .signup({ ...this.registerForm.value, photoFileName: filePath })
+      .subscribe({
+        next: (response) => {
+          this.successMessage = response.message;
+        },
+        error: (error) => {
+          console.error('Error:', error);
+        },
+      });
   }
 
   onFileChange(event: any) {
