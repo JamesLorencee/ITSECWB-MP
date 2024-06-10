@@ -17,6 +17,7 @@ import { AuthService } from '../auth.service';
 export class RegisterComponent {
   registerForm: FormGroup;
   submitted: boolean = false;
+  filePath: string = '';
   successMessage: string = '';
 
   constructor(
@@ -37,7 +38,7 @@ export class RegisterComponent {
             Validators.maxLength(11),
           ],
         ],
-        password: ['', [Validators.required, Validators.minLength(8)]],
+        password: ['', [Validators.required, Validators.minLength(12)]],
         confirmPassword: ['', Validators.required],
         profilePhoto: [null, Validators.required],
       },
@@ -51,32 +52,37 @@ export class RegisterComponent {
     return this.registerForm.controls;
   }
 
-  upload() {
+  onSubmit() {
     this.submitted = true;
-    const file = this.registerForm.get('profilePhoto')?.value;
-
-    if (file) {
-      this.authService.upload(file).subscribe({
-        next: (response) => {
-          this.onSubmit(response.filePath);
-        },
-        error: (error) => {
-          console.error('Error uploading profile photo:', error);
-        },
-      });
-    }
-  }
-
-  onSubmit(filePath: string) {
-    this.submitted = true;
-
     if (this.registerForm.invalid) return;
 
     this.authService
-      .signup({ ...this.registerForm.value, photoFileName: filePath })
+      .signup({ ...this.registerForm.value, photoFileName: 'temp.jpg' })
       .subscribe({
         next: (response) => {
           this.successMessage = response.message;
+          const file = this.registerForm.get('profilePhoto')?.value;
+
+          if (file) {
+            this.authService.upload(file).subscribe({
+              next: (response) => {
+                this.filePath = response.filePath;
+                this.authService
+                  .saveImg(this.filePath, this.registerForm.get('email')?.value)
+                  .subscribe({
+                    next: (response) => {
+                      console.log(this.successMessage);
+                    },
+                    error: (error) => {
+                      console.error('Error saving profile photo:', error);
+                    },
+                  });
+              },
+              error: (error) => {
+                console.error('Error uploading profile photo:', error);
+              },
+            });
+          }
         },
         error: (error) => {
           console.error('Error:', error);

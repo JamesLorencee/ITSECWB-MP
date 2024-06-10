@@ -31,4 +31,8 @@ export class AuthService {
     formData.append('profilePhoto', file, file.name);
     return this.http.post(`${this.baseUrl}/api/upload`, formData);
   }
+
+  saveImg(photoFileName: string, email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/saveImg`, { photoFileName, email });
+  }
 }

@@ -50,6 +50,27 @@ router.post(
   authController.signup
 );
 
+router.post(
+  "/saveImg",
+  [
+    body("email").isEmail().normalizeEmail(),
+    body("photoFileName")
+      .trim()
+      .not()
+      .isEmpty()
+      .withMessage("Photo is required.")
+      .custom((value) => {
+        const valid = [".jpg", ".jpeg", ".png"];
+        const extension = value.slice(value.lastIndexOf(".")).toLowerCase();
+        if (!valid.includes(extension)) {
+          throw new Error("Invalid file.");
+        }
+        return true;
+      }),
+  ],
+  authController.saveImg
+);
+
 router.post("/api/upload", multipartMiddleware, (req, res) => {
   const file = req.files.profilePhoto;
   const filePath = path.join("uploads", file.path.split("/").pop());

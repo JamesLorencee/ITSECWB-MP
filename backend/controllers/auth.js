@@ -81,3 +81,26 @@ exports.signup = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.saveImg = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    res.status(401).send({ error: errors });
+    return;
+  }
+
+  const email = req.body.email;
+  const photoFileName = req.body.photoFileName;
+
+  try {
+    const result = await User.saveImg(photoFileName, email);
+
+    res.status(201).json({ message: "Image updated in DB!" });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};

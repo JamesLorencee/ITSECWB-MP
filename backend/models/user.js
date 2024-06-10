@@ -41,4 +41,11 @@ module.exports = class User {
       ]
     );
   }
+
+  static saveImg(photoFileName, email) {
+    return db.execute("UPDATE users SET photoFileName = ? WHERE (email = ?);", [
+      photoFileName,
+      email,
+    ]);
+  }
 };
