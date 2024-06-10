@@ -38,6 +38,7 @@
         id="phone"
         formControlName="phone"
         class="form-control"
+        placeholder="09XXXXXXXXX"
         [ngClass]="{ 'is-invalid': submitted && f['phone'].errors }"
       />
       <div *ngIf="submitted && f['phone'].errors" class="invalid-feedback">
@@ -46,6 +47,13 @@
         </div>
         <div *ngIf="f['phone'].errors['pattern']">
           Phone number must be numeric
+        </div>
+        <div
+          *ngIf="
+            f['phone'].errors['minlength'] || f['phone'].errors['maxlength']
+          "
+        >
+          Phone number must be 11 digits
         </div>
       </div>
     </div>
@@ -62,7 +70,7 @@
       <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
         <div *ngIf="f['password'].errors['required']">Password is required</div>
         <div *ngIf="f['password'].errors['minlength']">
-          Password must be at least 6 characters
+          Password must be at least 8 characters
         </div>
       </div>
     </div>
@@ -94,6 +102,7 @@
       <input
         type="file"
         id="profilePhoto"
+        accept="image/png, image/jpeg"
         (change)="onFileChange($event)"
         class="form-control"
         [ngClass]="{ 'is-invalid': submitted && f['profilePhoto'].errors }"
