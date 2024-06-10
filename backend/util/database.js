@@ -1,12 +1,22 @@
-const mysql = require("mysql2");
+const mysql = require("mysql");
 
 const config = require("../config/config.json");
 
-const pool = mysql.createPool({
-  host: config.host,
-  user: config.user,
-  database: config.database,
-  password: config.password,
+// DB Credentials in .env
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+  database: "itsecwb-mp",
 });
 
-module.exports = pool.promise();
+db.connect(function (error) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Successfully connected to DB as ID " + db.threadId);
+  }
+});
+
+module.exports = db;
