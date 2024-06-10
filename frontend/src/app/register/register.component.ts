@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-register',
@@ -16,8 +17,13 @@ import { HttpClient } from '@angular/common/http';
 export class RegisterComponent {
   registerForm: FormGroup;
   submitted: boolean = false;
+  successMessage: string = '';
 
-  constructor(private formBuilder: FormBuilder, private http: HttpClient) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private http: HttpClient,
+    private authService: AuthService
+  ) {
     this.registerForm = this.formBuilder.group(
       {
         name: ['', Validators.required],
@@ -45,6 +51,22 @@ export class RegisterComponent {
     return this.registerForm.controls;
   }
 
+  upload() {
+    const file = this.registerForm.get('profilePhoto')?.value;
+
+    if (file) {
+      this.authService.upload(file).subscribe({
+        next: (response) => {
+          this.registerForm.patchValue({ photoFileName: response.filePath });
+          this.onSubmit();
+        },
+        error: (error) => {
+          console.error('Error uploading profile photo:', error);
+        },
+      });
+    }
+  }
+
   onSubmit() {
     this.submitted = true;
 
@@ -52,8 +74,25 @@ export class RegisterComponent {
       return;
     }
 
-    // Handle form submission
-    console.log(this.registerForm.value);
+    const formData = new FormData();
+    this.upload();
+    formData.append('name', this.registerForm.get('name')?.value);
+    formData.append('email', this.registerForm.get('email')?.value);
+    formData.append('phoneNumber', this.registerForm.get('phone')?.value);
+    formData.append('password', this.registerForm.get('password')?.value);
+    formData.append(
+      'photoFileName',
+      this.registerForm.get('photoFileName')?.value
+    );
+
+    this.authService.signup(formData).subscribe({
+      next: (response) => {
+        this.successMessage = response.message;
+      },
+      error: (error) => {
+        console.error('Error:', error);
+      },
+    });
   }
 
   onFileChange(event: any) {
@@ -89,22 +128,5 @@ export class RegisterComponent {
         matchingControl.setErrors(null);
       }
     };
-  }
-
-  upload() {
-    if (this.registerForm.invalid) {
-      return;
-    }
-
-    const formData = new FormData();
-    const file = this.registerForm.get('profilePhoto')?.value;
-
-    if (file) {
-      formData.append('profilePhoto', file, file.name);
-
-      this.http.post('/api/upload', formData).subscribe((response) => {
-        console.log('response received is ', response);
-      });
-    }
   }
 }

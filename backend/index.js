@@ -52,10 +52,10 @@ app.use(errorController.get404);
 
 app.use(errorController.get500);
 
-app.get("/api/upload", multipartMiddleware, (req, res) => {
-  res.json({
-    message: "File uploaded successfully!",
-  });
+app.post("/api/upload", multipartMiddleware, (req, res) => {
+  const file = req.files.profilePhoto;
+  const filePath = path.join("uploads", file.path.split("/").pop());
+  res.json({ filePath: filePath });
 });
 
 app.listen(ports, () => console.log(`Listening on port ${ports}`));
