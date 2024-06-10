@@ -1,15 +1,10 @@
 const express = require("express");
-
 const multipart = require("connect-multiparty");
 const multipartMiddleware = multipart({ uploadDir: "../frontend/uploads" });
 const path = require("path");
-
 const { body } = require("express-validator");
-
 const router = express.Router();
-
 const User = require("../models/user");
-
 const authController = require("../controllers/auth");
 
 router.post(
@@ -21,18 +16,16 @@ router.post(
       .withMessage("Please enter a valid email.")
       .custom(async (email) => {
         const user = await User.find(email);
-        if (user[0].length > 0) {
-          return Promise.reject("Please enter a valid email.");
-        }
-      })
+
+        if (user) return Promise.reject("Please enter a valid email.");
+      }
+    )
       .normalizeEmail(),
     body("password").trim().isLength({ min: 12 }),
-    body("phoneNumber")
+    body("phone")
       .trim()
-      .isLength({ min: 11, max: 11 })
-      .withMessage("Phone number must be exactly 11 digits.")
-      .isNumeric()
-      .withMessage("Phone number must contain only digits."),
+        .matches(/^\d{11}$/)
+      .withMessage("Phone number must be exactly 11 digits."),
     body("photoFileName")
       .trim()
       .not()

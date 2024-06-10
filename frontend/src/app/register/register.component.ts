@@ -54,12 +54,10 @@ export class RegisterComponent {
   upload() {
     this.submitted = true;
     const file = this.registerForm.get('profilePhoto')?.value;
-    console.log(file);
 
     if (file) {
       this.authService.upload(file).subscribe({
         next: (response) => {
-          console.log(response)
           this.onSubmit(response.filePath);
         },
         error: (error) => {
@@ -74,7 +72,6 @@ export class RegisterComponent {
 
     if (this.registerForm.invalid) return;
 
-    console.log(this.registerForm.value)
     this.authService.signup({...this.registerForm.value, "photoFileName": filePath}).subscribe({
       next: (response) => {
         this.successMessage = response.message;

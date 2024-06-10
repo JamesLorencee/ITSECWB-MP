@@ -10,7 +10,23 @@ module.exports = class User {
   }
 
   static find(email) {
-    return db.execute("SELECT * FROM users WHERE email = ?", [email]);
+    return new Promise((resolve, reject) => {
+      db.execute(
+        "SELECT * FROM users WHERE email = ?",
+        [email],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (rows.length > 0) {
+              resolve(rows[0]);
+            } else {
+              resolve(null);
+            }
+          }
+        }
+      );
+    });
   }
 
   static save(user) {

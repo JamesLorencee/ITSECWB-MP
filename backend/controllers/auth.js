@@ -5,11 +5,12 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user");
 
 exports.signup = async (req, res, next) => {
-  console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii: ", req.body)
   const errors = validationResult(req);
 
-  if (errors.isEmpty()) return;
-
+  if (!errors.isEmpty()){ 
+    res.status(401).send({"error": "Inputs are not valid"})
+    return;
+  }
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
@@ -28,7 +29,6 @@ exports.signup = async (req, res, next) => {
     };
 
     const result = await User.save(user);
-    console.log(result);
 
     res.status(201).json({ message: "User registered!" });
   } catch (err) {
