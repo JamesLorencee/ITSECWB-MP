@@ -1,6 +1,7 @@
 const multer = require("multer");
 const User = require("../models/user");
 const path = require("path");
+const validator = require("validator");
 
 // Define storage for uploaded files
 const storage = multer.diskStorage({
@@ -29,11 +30,8 @@ const uploadSignUp = multer({
     }
 
     // Validate email format
-    if (
-      !/^(([^<>()\[\]\\.,;:\s@\"]+(\.[^<>()\[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        email
-      )
-    ) {
+    if (!validator.isEmail(email)) {
+      console.log("Please enter a valid email address.");
       return cb(new Error("Please enter a valid email address."), false);
     }
 
