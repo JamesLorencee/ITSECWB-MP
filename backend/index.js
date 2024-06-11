@@ -3,11 +3,11 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/auth.route");
 
 const db = require("./util/database");
 
-const errorController = require("./controllers/error");
+const errorController = require("./controllers/error.controller");
 
 const app = express();
 

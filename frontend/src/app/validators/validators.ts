@@ -8,12 +8,10 @@ export function validateFile(): ValidatorFn {
     let value = control.value;
     if (!value) return null;
 
-    console.log(value.name);
     value = value.name?.toLowerCase();
 
     const regex = new RegExp('(.*?)\\.(jpg|jpeg|png)$');
     const regexTest = regex.test(value);
-    // console.log(regexTest);
     return !regexTest ? { notSupportedFileType: true } : null;
   };
 }

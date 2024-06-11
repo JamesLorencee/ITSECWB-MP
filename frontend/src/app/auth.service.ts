@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
 @Injectable({
@@ -7,9 +7,9 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 })
 export class AuthService {
   private baseUrl = 'http://localhost:3000/auth';
+  private token = '';
 
   constructor(private http: HttpClient) {}
-
   signin(email: string, password: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/signin`, { email, password });
   }
@@ -23,16 +23,27 @@ export class AuthService {
   }
 
   signup(userData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signup`, userData);
+    let formData: any = new FormData();
+    Object.keys(userData.controls).forEach((formControlName) => {
+      if (formControlName == 'photoProfile')
+        formData.append(formControlName, userData.get(formControlName).value, formControlName);
+      else formData.append(formControlName, userData.get(formControlName).value);
+    });
+    return this.http.post(`${this.baseUrl}/signup`, formData);
   }
 
-  upload(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('profilePhoto', file, file.name);
-    return this.http.post(`${this.baseUrl}/api/upload`, formData);
-  }
+  // upload(file: File): Observable<any> {
+  //   const formData = new FormData();
+  //   formData.append('profilePhoto', file, file.name);
+  //   return this.http.post(`${this.baseUrl}/api/upload`, formData, {
+  //     headers: new HttpHeaders({
+  //       'Content-Type': 'multipart/form-data',
+  //       Authorization: 'Bearer ' + this.token,
+  //     }),
+  //   });
+  // }
 
-  saveImg(photoFileName: string, email: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/saveImg`, { photoFileName, email });
-  }
+  // saveImg(photoFileName: string, email: string): Observable<any> {
+  //   return this.http.post(`${this.baseUrl}/saveImg`, { photoFileName, email });
+  // }
 }

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { validateFile } from '../validators/validators';
@@ -24,7 +23,7 @@ export class RegisterComponent {
         name: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
         phone: ['', [Validators.required, Validators.pattern('^[0-9]{11}$')]],
-        password: ['', [Validators.required, Validators.minLength(8)]],
+        password: ['', [Validators.required, Validators.minLength(12)]],
         confirmPassword: ['', Validators.required],
         profilePhoto: [null, [Validators.required, validateFile()]],
       },
@@ -38,43 +37,23 @@ export class RegisterComponent {
     return this.registerForm.controls;
   }
 
-  upload() {
-    this.submitted = true;
-    const file = this.registerForm.get('profilePhoto')?.value;
-
-    if (file) {
-      this.authService.upload(file).subscribe({
-        next: (response) => {
-          this.onSubmit(response.filePath);
-        },
-        error: (error) => {
-          console.error('Error uploading profile photo:', error);
-        },
-      });
-    }
-  }
-
-  onSubmit(filePath: string) {
+  onSubmit() {
     this.submitted = true;
 
     if (this.registerForm.invalid) return;
 
-    this.authService.signup({ ...this.registerForm.value, photoFileName: filePath }).subscribe({
-      next: (response) => {
-        this.successMessage = response.message;
+    this.authService.signup(this.registerForm).subscribe({
+      next: (res) => {
+        this.successMessage = res.message;
       },
-      error: (error) => {
-        console.error('Error:', error);
+      error: (err) => {
+        console.log(err);
       },
     });
   }
 
   onFileChange(event: any) {
     const file = event.target.files[0];
-    // const valid = ['image/png', 'image/jpeg', 'image/jpg'];
-
-    // // invalid file type
-    // if (!valid.includes(file.type)) return;
 
     this.registerForm.patchValue({
       profilePhoto: file,
