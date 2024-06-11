@@ -1,14 +1,9 @@
 import { Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
-
+import { validateFile } from '../validators/validators';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -22,28 +17,20 @@ export class RegisterComponent {
   constructor(
     private formBuilder: FormBuilder,
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.registerForm = this.formBuilder.group(
       {
         name: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
-        phone: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern('^[0-9]+$'),
-            Validators.minLength(11),
-            Validators.maxLength(11),
-          ],
-        ],
+        phone: ['', [Validators.required, Validators.pattern('^[0-9]{11}$')]],
         password: ['', [Validators.required, Validators.minLength(8)]],
         confirmPassword: ['', Validators.required],
-        profilePhoto: [null, Validators.required],
+        profilePhoto: [null, [Validators.required, validateFile()]],
       },
       {
         validator: this.mustMatch('password', 'confirmPassword'),
-      }
+      },
     );
   }
 
@@ -72,7 +59,7 @@ export class RegisterComponent {
 
     if (this.registerForm.invalid) return;
 
-    this.authService.signup({...this.registerForm.value, "photoFileName": filePath}).subscribe({
+    this.authService.signup({ ...this.registerForm.value, photoFileName: filePath }).subscribe({
       next: (response) => {
         this.successMessage = response.message;
       },
@@ -83,19 +70,15 @@ export class RegisterComponent {
   }
 
   onFileChange(event: any) {
-    if (event.target.files.length > 0) {
-      const file = event.target.files[0];
-      const valid = ['image/png', 'image/jpeg', 'image/jpg'];
+    const file = event.target.files[0];
+    // const valid = ['image/png', 'image/jpeg', 'image/jpg'];
 
-      // invalid file type
-      if (!valid.includes(file.type)) {
-        return;
-      }
+    // // invalid file type
+    // if (!valid.includes(file.type)) return;
 
-      this.registerForm.patchValue({
-        profilePhoto: file,
-      });
-    }
+    this.registerForm.patchValue({
+      profilePhoto: file,
+    });
   }
 
   mustMatch(password: string, confirmPassword: string) {
