@@ -19,14 +19,29 @@ export class RegisterComponent {
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.registerForm = this.formBuilder.group(
       {
         name: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
+        email: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern(
+              '^((?:[A-Za-z0-9!#$%&\'*+\\-\\/=?^_`{|}~]|(?<=^|\\.)"|"(?=$|\\.|@)|(?<=".*)[ .](?=.*")|(?<!\\.)\\.){1,64})(@)((?:[A-Za-z0-9.\\-])*(?:[A-Za-z0-9])\\.(?:[A-Za-z0-9]){2,})$',
+            ),
+          ],
+        ],
         phone: ['', [Validators.required, Validators.pattern('^[0-9]{11}$')]],
-        password: ['', [Validators.required, Validators.minLength(12)]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(12),
+            Validators.pattern('^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{12,64}$'),
+          ],
+        ],
         confirmPassword: ['', Validators.required],
         profilePhoto: [null, [Validators.required, validateFile()]],
       },
@@ -52,6 +67,7 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.log(err);
+        this.successMessage = err.error.error.message;
       },
     });
   }

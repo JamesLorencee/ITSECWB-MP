@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
+require("dotenv").config();
+
 exports.signin = async (req, res) => {
   const errors = validationResult(req);
 
@@ -30,9 +32,9 @@ exports.signin = async (req, res) => {
       {
         email: user.email,
         userId: user.id,
-        // userType:
+        isAdmin: user.isAdmin,
       },
-      "secretfortoken",
+      process.env.JWT_SECRET,
       { expiresIn: "5m" }
     );
     console.log(token);

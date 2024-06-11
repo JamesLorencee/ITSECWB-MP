@@ -41,6 +41,7 @@ module.exports = class User {
           user.photoFileName,
         ]
       );
+      return { insert };
     } catch (error) {
       throw error;
     }
