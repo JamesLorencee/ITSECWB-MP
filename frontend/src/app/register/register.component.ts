@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { validateFile } from '../validators/validators';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -17,6 +19,7 @@ export class RegisterComponent {
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private authService: AuthService,
+    private router: Router
   ) {
     this.registerForm = this.formBuilder.group(
       {
@@ -45,6 +48,7 @@ export class RegisterComponent {
     this.authService.signup(this.registerForm).subscribe({
       next: (res) => {
         this.successMessage = res.message;
+        this.router.navigate(['/']);
       },
       error: (err) => {
         console.log(err);

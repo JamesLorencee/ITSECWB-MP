@@ -30,6 +30,7 @@ exports.signin = async (req, res) => {
       {
         email: user.email,
         userId: user.id,
+        // userType:
       },
       "secretfortoken",
       { expiresIn: "5m" }
