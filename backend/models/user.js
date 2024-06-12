@@ -29,17 +29,22 @@ module.exports = class User {
     });
   }
 
-  static save(user) {
-    return db.execute(
-      "INSERT INTO users (name, email, password, phoneNumber, photoFileName) VALUES (?, ? ,?, ?, ?)",
-      [
-        user.name,
-        user.email,
-        user.password,
-        user.phoneNumber,
-        user.photoFileName,
-      ]
-    );
+  static async save(user) {
+    try {
+      const insert = await db.execute(
+        "INSERT INTO users (name, email, password, phoneNumber, photoFileName) VALUES (?, ? ,?, ?, ?)",
+        [
+          user.name,
+          user.email,
+          user.password,
+          user.phoneNumber,
+          user.photoFileName,
+        ]
+      );
+      return { insert };
+    } catch (error) {
+      throw error;
+    }
   }
 
   static saveImg(photoFileName, email) {

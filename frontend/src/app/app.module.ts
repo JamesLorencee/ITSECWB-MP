@@ -9,9 +9,11 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
+import { AdminHomeComponent } from './admin/home/home.component';
+import { HomeComponent } from './user/home/home.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, RegisterComponent],
+  declarations: [AppComponent, LoginComponent, RegisterComponent, AdminHomeComponent, HomeComponent],
   imports: [
     BrowserModule,
     CommonModule,
