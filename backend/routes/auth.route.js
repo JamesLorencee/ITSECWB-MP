@@ -8,9 +8,8 @@ const authController = require("../controllers/auth.controller");
 const uploadSignUp = require("../middleware/multer");
 const { authenticateJWT } = require("../middleware/jwt");
 
-router.post("/test", authenticateJWT, (req, res) => {
-  // console.log(req.user)
-  res.json(req.user);
+router.get("/is-logged-in", authenticateJWT, (req, res) => {
+  res.send(true);
 });
 
 router.post("/token", authController.token);

@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
 import { AdminHomeComponent } from './admin/home/home.component';
 import { HomeComponent } from './user/home/home.component';
+import { RoleGuardService } from './guards/role-guard.guard';
 
 @NgModule({
   declarations: [AppComponent, LoginComponent, RegisterComponent, AdminHomeComponent, HomeComponent],
@@ -23,7 +24,7 @@ import { HomeComponent } from './user/home/home.component';
     AppRoutingModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [RoleGuardService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

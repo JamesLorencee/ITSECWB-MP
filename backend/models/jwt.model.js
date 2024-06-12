@@ -12,6 +12,7 @@ exports.checkIfBlacklisted = (token) => {
           if (rows.length > 0) {
             reject(rows[0]);
           } else {
+            console.log("hi");
             resolve(null);
           }
         }
@@ -21,6 +22,7 @@ exports.checkIfBlacklisted = (token) => {
 };
 
 exports.blackListJWT = (token, time) => {
+  console.log("added");
   return this.checkIfBlacklisted(token)
     .then(() => {
       return new Promise((resolve, reject) => {

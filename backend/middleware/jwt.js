@@ -35,6 +35,7 @@ exports.authenticateJWT = (req, res, next) => {
   BlackListDB.checkIfBlacklisted(token)
     .then(() => {
       jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
+        console.log(err, user);
         if (err) return res.sendStatus(403);
         req.user = user;
         next();

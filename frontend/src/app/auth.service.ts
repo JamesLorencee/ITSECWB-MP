@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, mergeMap, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,15 +11,57 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
   signin(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signin`, { email, password });
+    return this.http.post(`${this.baseUrl}/signin`, { email, password }).pipe(
+      tap((val: any) => {
+        localStorage.setItem('accessToken', val.accessToken);
+        localStorage.setItem('refreshToken', val.refreshToken);
+      }),
+    );
   }
 
   signout(): void {
-    localStorage.removeItem('token');
+    const token = this.getAccessToken();
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    this.http.delete<any>(`${this.baseUrl}/logout`, { headers: headers }).subscribe(() => {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    });
   }
 
-  getToken(): string | null {
-    return localStorage.getItem('token');
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken');
+  }
+  getAccessToken(): string | null {
+    return localStorage.getItem('accessToken');
+  }
+
+  isLoggedIn(): Observable<boolean> {
+    var token = this.getAccessToken();
+    var headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`, { headers: headers }).pipe(
+      catchError((error) => {
+        return this.http.post<any>(`${this.baseUrl}/token`, { refreshToken: this.getRefreshToken() }).pipe(
+          mergeMap((value) => {
+            localStorage.setItem('accessToken', value.accessToken);
+
+            headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+            return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`, { headers: headers }).pipe(
+              (value) => {
+                return value;
+              },
+              catchError((error) => {
+                return of(false);
+              }),
+            );
+          }),
+        );
+      }),
+      (value) => {
+        return value;
+      },
+    );
   }
 
   signup(userData: any): Observable<any> {
@@ -31,19 +73,4 @@ export class AuthService {
     });
     return this.http.post(`${this.baseUrl}/signup`, formData);
   }
-
-  // upload(file: File): Observable<any> {
-  //   const formData = new FormData();
-  //   formData.append('profilePhoto', file, file.name);
-  //   return this.http.post(`${this.baseUrl}/api/upload`, formData, {
-  //     headers: new HttpHeaders({
-  //       'Content-Type': 'multipart/form-data',
-  //       Authorization: 'Bearer ' + this.token,
-  //     }),
-  //   });
-  // }
-
-  // saveImg(photoFileName: string, email: string): Observable<any> {
-  //   return this.http.post(`${this.baseUrl}/saveImg`, { photoFileName, email });
-  // }
 }
