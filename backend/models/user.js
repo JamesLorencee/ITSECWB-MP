@@ -1,4 +1,5 @@
 const db = require("../util/database");
+const bcrypt = require("bcryptjs");
 
 module.exports = class User {
   constructor(name, email, password, phoneNumber, photoFileName) {
@@ -7,6 +8,68 @@ module.exports = class User {
     this.password = password;
     this.phoneNumber = phoneNumber;
     this.photoFileName = photoFileName;
+  }
+
+  static getRefreshToken(userId) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        "SELECT `refreshToken` FROM `users` WHERE `id` = ?",
+        [userId],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (rows.length > 0) {
+              resolve(rows[0]);
+            } else {
+              resolve(null);
+            }
+          }
+        }
+      );
+    });
+  }
+
+  static async deleteRefreshToken(userId) {
+    console.log(userId);
+    return new Promise((resolve, reject) => {
+      db.execute(
+        "UPDATE `users` SET refreshToken = null WHERE id = ?",
+        [userId],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (rows.length > 0) {
+              resolve(rows[0]);
+            } else {
+              resolve(null);
+            }
+          }
+        }
+      );
+    });
+  }
+  static async updateRefreshToken(refreshToken, userId) {
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(refreshToken, salt);
+    return new Promise((resolve, reject) => {
+      db.execute(
+        "UPDATE `users` SET refreshToken = ? WHERE id = ?",
+        [hashed, userId],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (rows.length > 0) {
+              resolve(rows[0]);
+            } else {
+              resolve(null);
+            }
+          }
+        }
+      );
+    });
   }
 
   static find(email) {

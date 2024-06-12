@@ -6,6 +6,16 @@ const router = express.Router();
 const User = require("../models/user");
 const authController = require("../controllers/auth.controller");
 const uploadSignUp = require("../middleware/multer");
+const { authenticateJWT } = require("../middleware/jwt");
+
+router.post("/test", authenticateJWT, (req, res) => {
+  // console.log(req.user)
+  res.json(req.user);
+});
+
+router.post("/token", authController.token);
+
+router.delete("/logout", authController.logout);
 
 router.post(
   "/signup",
