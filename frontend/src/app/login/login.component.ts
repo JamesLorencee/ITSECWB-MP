@@ -20,7 +20,7 @@ export class LoginComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -42,21 +42,20 @@ export class LoginComponent {
       return;
     }
 
-    this.authService
-      .signin(this.loginForm.value.email, this.loginForm.value.password)
-      .subscribe({
-        next: (response) => {
-          localStorage.setItem('token', response.token);
-          this.errorMessage = '';
-          // this.router.navigate(['/home']);
-          console.log('Successful login');
-          console.log(this.authService.getToken());
-          this.authService.signout();
-        },
-        error: (error) => {
-          this.errorMessage = 'Invalid username or password';
-          console.error('Error:', error);
-        },
-      });
+    this.authService.signin(this.loginForm.value.email, this.loginForm.value.password).subscribe({
+      next: (response) => {
+        console.log(response);
+        localStorage.setItem('token', response.token);
+        this.errorMessage = '';
+        // this.router.navigate(['/home']);
+        console.log('Successful login');
+        console.log(this.authService.getToken());
+        this.authService.signout();
+      },
+      error: (error) => {
+        this.errorMessage = error.error;
+        console.log('Error:', error);
+      },
+    });
   }
 }

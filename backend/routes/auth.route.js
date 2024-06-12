@@ -6,9 +6,17 @@ const router = express.Router();
 const User = require("../models/user");
 const authController = require("../controllers/auth.controller");
 const uploadSignUp = require("../middleware/multer");
+const rateLimit = require("express-rate-limit");
+const loginLimiter = rateLimit({
+  windowMs: 15 * 1000, // 15 seconds
+  limit: 5 * 2, //
+  message:
+    "There have been multiple requests made through this IP. Please try again after 15 minutes.",
+});
 
 router.post(
   "/signup",
+  loginLimiter,
   uploadSignUp.single("profilePhoto"),
   (req, res, next) => {
     // If there is an error from fileFilter, it will be stored in req.fileFilterError by multer
@@ -22,6 +30,7 @@ router.post(
 
 router.post(
   "/signin",
+  loginLimiter,
   [
     body("email").isEmail().normalizeEmail().withMessage("Fix the email"),
     body("password")
@@ -29,34 +38,8 @@ router.post(
       .isLength({ min: 12 })
       .withMessage("Fix the password"),
   ],
+  loginLimiter,
   authController.signin
 );
-
-router.post(
-  "/saveImg",
-  [
-    body("email").isEmail().normalizeEmail(),
-    body("photoFileName")
-      .trim()
-      .not()
-      .isEmpty()
-      .withMessage("Photo is required.")
-      .custom((value) => {
-        const valid = [".jpg", ".jpeg", ".png"];
-        const extension = value.slice(value.lastIndexOf(".")).toLowerCase();
-        if (!valid.includes(extension)) {
-          throw new Error("Invalid file.");
-        }
-        return true;
-      }),
-  ],
-  authController.saveImg
-);
-
-router.post("/api/upload", multipartMiddleware, (req, res) => {
-  const file = req.files.profilePhoto;
-  const filePath = path.join("uploads", file.path.split("/").pop());
-  res.json({ filePath: filePath });
-});
 
 module.exports = router;

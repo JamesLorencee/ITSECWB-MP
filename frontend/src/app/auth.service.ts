@@ -31,19 +31,4 @@ export class AuthService {
     });
     return this.http.post(`${this.baseUrl}/signup`, formData);
   }
-
-  // upload(file: File): Observable<any> {
-  //   const formData = new FormData();
-  //   formData.append('profilePhoto', file, file.name);
-  //   return this.http.post(`${this.baseUrl}/api/upload`, formData, {
-  //     headers: new HttpHeaders({
-  //       'Content-Type': 'multipart/form-data',
-  //       Authorization: 'Bearer ' + this.token,
-  //     }),
-  //   });
-  // }
-
-  // saveImg(photoFileName: string, email: string): Observable<any> {
-  //   return this.http.post(`${this.baseUrl}/saveImg`, { photoFileName, email });
-  // }
 }
