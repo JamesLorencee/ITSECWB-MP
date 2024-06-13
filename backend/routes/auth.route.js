@@ -10,8 +10,10 @@ const rateLimit = require("express-rate-limit");
 const loginLimiter = rateLimit({
   windowMs: 15 * 1000, // 15 seconds
   limit: 5 * 2, //
-  message:
-    "There have been multiple requests made through this IP. Please try again after 15 minutes.",
+  message: {
+    message:
+      "There have been multiple requests made through this IP. Please try again after 15 minutes.",
+  },
 });
 const { authenticateJWT } = require("../middleware/jwt");
 

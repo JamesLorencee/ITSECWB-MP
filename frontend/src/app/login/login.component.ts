@@ -63,7 +63,7 @@ export class LoginComponent {
         this.errorMessage = '';
       },
       error: (error) => {
-        this.errorMessage = 'Invalid username or password';
+        this.errorMessage = error.error.message;
         console.error('Error:', error);
       },
     });
