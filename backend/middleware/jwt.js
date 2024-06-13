@@ -4,6 +4,7 @@ const BlackListDB = require("../models/jwt.model");
 
 // Function to add token to blacklist
 exports.addToBlacklist = (tokenId) => {
+  console.log("token", tokenId);
   return new Promise((resolve, reject) => {
     jwt.verify(
       tokenId,

@@ -25,41 +25,43 @@ exports.logout = async (req, res) => {
 exports.token = async (req, res) => {
   const refreshToken = req.body.refreshToken;
 
-  if (refreshToken == null) res.sendStatus(401);
+  if (refreshToken == null) {
+    return res.sendStatus(401);
+  }
 
-  jwt.verify(
-    refreshToken,
-    process.env.JWT_REFRESH_SECRET,
-    async (err, user) => {
-      if (err) return res.sendStatus(403);
-      User.getRefreshToken(user.userId).then(async (storedRefreshToken) => {
-        if (!storedRefreshToken.refreshToken) return res.sendStatus(403);
+  try {
+    const user = await jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const storedRefreshToken = await User.getRefreshToken(user.userId);
 
-        try {
-          const match = await bcrypt.compare(
-            refreshToken,
-            storedRefreshToken.refreshToken
-          );
-          if (!match) {
-            return res.status(401);
-          }
-          const accessToken = generateAccessToken({
-            email: user.email,
-            userId: user.userId,
-            isAdmin: user.isAmin,
-          });
-
-          res.status(200).json({
-            accessToken: accessToken,
-          });
-        } catch (err) {
-          if (!err.statusCode) {
-            err.statusCode = 500;
-          }
-        }
-      });
+    if (!storedRefreshToken.refreshToken) {
+      return res.sendStatus(403);
     }
-  );
+
+    const match = await bcrypt.compare(
+      refreshToken,
+      storedRefreshToken.refreshToken
+    );
+
+    if (!match) {
+      return res.status(401).send(); // or use sendStatus(401)
+    }
+
+    const accessToken = generateAccessToken({
+      email: user.email,
+      userId: user.userId,
+      isAdmin: user.isAmin, // This should be isAdmin, not isAmin
+    });
+
+    return res.status(200).json({
+      accessToken: accessToken,
+    });
+  } catch (err) {
+    if (err instanceof jwt.JsonWebTokenError) {
+      return res.sendStatus(403);
+    } else {
+      return res.sendStatus(500);
+    }
+  }
 };
 
 exports.signin = async (req, res) => {
@@ -94,6 +96,7 @@ exports.signin = async (req, res) => {
       refreshToken: refreshToken,
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err });
     if (!err.statusCode) {
       err.statusCode = 500;

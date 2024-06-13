@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { catchError, map, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { jwtDecode } from 'jwt-decode'; // Correct import for jwt-decode
 import { AuthService } from '../auth.service';
+import { NavigationExtras } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root', // Added providedIn for proper dependency injection
+  providedIn: 'root',
 })
 export class RoleGuardService implements CanActivate {
   constructor(
@@ -14,45 +16,47 @@ export class RoleGuardService implements CanActivate {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    const isadmindata = route.data['isAdmin'];
+    const isAdminData = route.data['isAdmin'];
     const redirect = route.data['redirect'];
     const token = localStorage.getItem('accessToken');
 
-    if (!token) {
-      // If token is not present, redirect to login unless already on login/register page
-      if (route.url[0]?.path !== 'login' && route.url[0]?.path !== 'register') {
-        this.router.navigateByUrl('/login');
-      }
-      console.log('hi');
-      return of(true);
-    }
-
     return this.authService.isLoggedIn().pipe(
-      map((isloggedin) => {
-        if (!isloggedin) {
-          this.router.navigateByUrl('/');
-          return false;
-        }
+      (value) => {
+        // true
+        return value.pipe(
+          () => {
+            if (!token) {
+              if (state.url != '/login') this.router.navigateByUrl('/login');
+              return of(true);
+            }
+            var decode: any = jwtDecode(token!);
+            var isAdmin = decode.isAdmin;
 
-        const decoded: any = jwtDecode(token);
-        const isAdmin = decoded.isAdmin;
+            if (isAdmin == null) {
+              if (state.url != '/login') this.router.navigateByUrl('/login');
+              return of(true);
+            }
+            const routePath = isAdmin ? 'admin' : 'home';
 
-        if (redirect && isAdmin) {
-          const routepath = isAdmin ? 'admin' : 'home';
-          this.router.navigateByUrl(`/${routepath}`);
-          return false; // Prevent further activation, as redirection is done
-        }
+            if (isAdmin == isAdminData) {
+              return of(true);
+            } else {
+              this.router.navigateByUrl(`/${routePath}`);
+              return of(false);
+            }
 
-        if (isAdmin && isadmindata) {
-          return true;
-        } else {
-          this.router.navigateByUrl('/');
-          return false;
-        }
-      }),
-      catchError(() => {
-        this.router.navigateByUrl('/');
-        return of(false);
+            //is Logged In
+            return of(true);
+          },
+          catchError(() => {
+            if (state.url != '/login') this.router.navigateByUrl('/login');
+            return of(true);
+          }),
+        );
+      },
+      catchError((val) => {
+        if (state.url != '/login') this.router.navigateByUrl('/login');
+        return of(true);
       }),
     );
   }

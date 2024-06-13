@@ -10,6 +10,7 @@ export class AuthService {
   private token = '';
 
   constructor(private http: HttpClient) {}
+
   signin(email: string, password: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/signin`, { email, password }).pipe(
       tap((val: any) => {
@@ -45,6 +46,7 @@ export class AuthService {
         return this.http.post<any>(`${this.baseUrl}/token`, { refreshToken: this.getRefreshToken() }).pipe(
           mergeMap((value) => {
             localStorage.setItem('accessToken', value.accessToken);
+            token = this.getAccessToken();
 
             headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
             return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`, { headers: headers }).pipe(
