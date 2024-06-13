@@ -1,0 +1,29 @@
+POST http://127.0.0.1:3000/auth/test
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoeWxlX2xlZSFAZGxzdS5lZHUucGgiLCJ1c2VySWQiOiJjNjcyMGM0Ni0yODcxLTExZWYtODZjYS0wMDE1NWRiYmY2NjgiLCJpc0FkbWluIjowLCJpYXQiOjE3MTgxNzcxNTcsImV4cCI6MTcxODE3ODA1N30.Gbjl6Byz8UpFB1ME0EHUcwUU_IHNLz7PVai2k4XjeXU
+
+###
+
+POST http://127.0.0.1:3000/auth/signin
+Content-Type: application/json
+
+{
+    "email": "chyle_lee!@dlsu.edu.ph",
+    "password": "qwerty01!QWERTY" 
+}
+
+###
+
+POST http://127.0.0.1:3000/auth/token
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoeWxlX2xlZSFAZGxzdS5lZHUucGgiLCJ1c2VySWQiOiJjNjcyMGM0Ni0yODcxLTExZWYtODZjYS0wMDE1NWRiYmY2NjgiLCJpc0FkbWluIjowLCJpYXQiOjE3MTgxNzY2Mzl9.rwnBMPh7kvtCTLIO3FjkKWiPqCFY-2qVmdxVpf_SHKw"
+}
+###
+DELETE http://127.0.0.1:3000/auth/logout
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoeWxlX2xlZSFAZGxzdS5lZHUucGgiLCJ1c2VySWQiOiJjNjcyMGM0Ni0yODcxLTExZWYtODZjYS0wMDE1NWRiYmY2NjgiLCJpc0FkbWluIjowLCJpYXQiOjE3MTgxNzcxNTcsImV4cCI6MTcxODE3ODA1N30.Gbjl6Byz8UpFB1ME0EHUcwUU_IHNLz7PVai2k4XjeXU
+###
+
+GET http://127.0.0.1:3000/auth/authenticate/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoeWxlX2xlZSFAZGxzdS5lZHUucGgiLCJ1c2VySWQiOiJjNjcyMGM0Ni0yODcxLTExZWYtODZjYS0wMDE1NWRiYmY2NjgiLCJpc0FkbWluIjoxLCJpYXQiOjE3MTgyODMwMDksImV4cCI6MTcxODI4MzkwOX0._k6aKKKUC2DpJyj1WZROpyDZFYZeBacJms7GGFfrX6c
+

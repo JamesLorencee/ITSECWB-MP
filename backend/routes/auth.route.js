@@ -13,6 +13,21 @@ const loginLimiter = rateLimit({
   message:
     "There have been multiple requests made through this IP. Please try again after 15 minutes.",
 });
+const { authenticateJWT } = require("../middleware/jwt");
+
+router.get("/is-logged-in", authenticateJWT, (req, res) => {
+  res.status(200).send(true);
+});
+
+router.get(
+  "/authenticate/:role",
+  authenticateJWT,
+  authController.authenticateRoles
+);
+
+router.post("/token", authController.token);
+
+router.delete("/logout", authController.logout);
 
 router.post(
   "/signup",

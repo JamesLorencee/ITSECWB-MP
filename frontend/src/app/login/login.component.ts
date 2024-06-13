@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   // standalone: true,
@@ -16,6 +18,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   submitted = false;
   errorMessage: string = '';
+  value: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -26,7 +29,7 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
-    console.log(this.authService.getToken());
+    console.log(this.authService.getAccessToken());
   }
 
   ngOnInit(): void {}
@@ -43,18 +46,25 @@ export class LoginComponent {
     }
 
     this.authService.signin(this.loginForm.value.email, this.loginForm.value.password).subscribe({
-      next: (response) => {
-        console.log(response);
-        localStorage.setItem('token', response.token);
+      next: () => {
+        const accessToken = this.authService.getAccessToken();
+        if (!accessToken) {
+          return;
+        }
+
+        const decoded: any = jwtDecode(accessToken);
+        const isAdmin = decoded.isAdmin;
+
+        if (isAdmin) {
+          this.router.navigate(['/admin']); // Redirect admin to admin dashboard
+        } else {
+          this.router.navigate(['/user']); // Redirect user to user dashboard
+        }
         this.errorMessage = '';
-        // this.router.navigate(['/home']);
-        console.log('Successful login');
-        console.log(this.authService.getToken());
-        this.authService.signout();
       },
       error: (error) => {
-        this.errorMessage = error.error;
-        console.log('Error:', error);
+        this.errorMessage = 'Invalid username or password';
+        console.error('Error:', error);
       },
     });
   }

@@ -10,10 +10,22 @@ import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
 import { AdminHomeComponent } from './admin/home/home.component';
-import { HomeComponent } from './user/home/home.component';
+import { UserHomeComponent } from './user/home/home.component';
+import { PageSchemaComponent } from './page-schema/page-schema.component';
+import { AdminTestComponent } from './admin/test/test.component';
+import { UserTestComponent } from './user/test/test.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, RegisterComponent, AdminHomeComponent, HomeComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    RegisterComponent,
+    AdminHomeComponent,
+    UserHomeComponent,
+    PageSchemaComponent,
+    AdminTestComponent,
+    UserTestComponent,
+  ],
   imports: [
     BrowserModule,
     CommonModule,
