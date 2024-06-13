@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   // standalone: true,
@@ -44,23 +45,27 @@ export class LoginComponent {
       return;
     }
 
-    this.authService
-      .signin(this.loginForm.value.email, this.loginForm.value.password)
-      .pipe(
-        finalize(() => {
-          // Navigate to the root after task completion or error
-          this.router.navigate(['/home']);
-        }),
-      )
-      .subscribe({
-        next: (response) => {
-          localStorage.setItem('token', response.token);
-          this.errorMessage = '';
-        },
-        error: (error) => {
-          this.errorMessage = 'Invalid username or password';
-          console.error('Error:', error);
-        },
-      });
+    this.authService.signin(this.loginForm.value.email, this.loginForm.value.password).subscribe({
+      next: () => {
+        const accessToken = this.authService.getAccessToken();
+        if (!accessToken) {
+          return;
+        }
+
+        const decoded: any = jwtDecode(accessToken);
+        const isAdmin = decoded.isAdmin;
+
+        if (isAdmin) {
+          this.router.navigate(['/admin']); // Redirect admin to admin dashboard
+        } else {
+          this.router.navigate(['/user']); // Redirect user to user dashboard
+        }
+        this.errorMessage = '';
+      },
+      error: (error) => {
+        this.errorMessage = 'Invalid username or password';
+        console.error('Error:', error);
+      },
+    });
   }
 }

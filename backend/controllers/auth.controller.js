@@ -9,24 +9,35 @@ const {
   addToBlacklist,
 } = require("../middleware/jwt");
 
+exports.authenticateRoles = (req, res) => {
+  const role = req.params.role;
+  console.log(req.user.isAdmin ? "true" : "false", role);
+  if (req.user.isAdmin ? "true" : "false" == role)
+    return res.status(200).send(true);
+  else return res.status(401).json({ error: "unauthorized" });
+};
+
 exports.logout = async (req, res) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
-  addToBlacklist(token).then((val) => {
-    console.log(val);
-    if (!val) return res.sendStatus(403);
+  addToBlacklist(token)
+    .then((val) => {
+      if (!val) return res.status(403).json({ error: "invalid_token" });
 
-    User.deleteRefreshToken(val).then(() => {
-      res.sendStatus(204);
+      User.deleteRefreshToken(val).then(() => {
+        res.sendStatus(204);
+      });
+    })
+    .catch(() => {
+      res.status(403).json({ error: "already_loggedout" });
     });
-  });
 };
 
 exports.token = async (req, res) => {
   const refreshToken = req.body.refreshToken;
 
   if (refreshToken == null) {
-    return res.sendStatus(401);
+    return res.status(401).json({ error: "invalid_token" }); // or use sendStatus(401)
   }
 
   try {
@@ -34,7 +45,7 @@ exports.token = async (req, res) => {
     const storedRefreshToken = await User.getRefreshToken(user.userId);
 
     if (!storedRefreshToken.refreshToken) {
-      return res.sendStatus(403);
+      return res.status(401).json({ error: "invalid_token" }); // or use sendStatus(401)
     }
 
     const match = await bcrypt.compare(
@@ -43,7 +54,7 @@ exports.token = async (req, res) => {
     );
 
     if (!match) {
-      return res.status(401).send(); // or use sendStatus(401)
+      return res.status(401).json({ error: "invalid_token" }); // or use sendStatus(401)
     }
 
     const accessToken = generateAccessToken({
@@ -57,9 +68,9 @@ exports.token = async (req, res) => {
     });
   } catch (err) {
     if (err instanceof jwt.JsonWebTokenError) {
-      return res.sendStatus(403);
+      return res.status(401).json({ error: "invalid_token" }); // or use sendStatus(401)
     } else {
-      return res.sendStatus(500);
+      return res.status(401).json({ error: "invalid_token" }); // or use sendStatus(401)
     }
   }
 };
@@ -123,32 +134,9 @@ exports.signup = async (req, res, next) => {
       photoFileName: photoFileName,
     };
 
-    const result = await User.save(user);
+    await User.save(user);
 
     res.status(201).json({ message: "User registered!" });
-  } catch (err) {
-    if (!err.statusCode) {
-      err.statusCode = 500;
-    }
-    next(err);
-  }
-};
-
-exports.saveImg = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    res.status(401).send({ error: errors });
-    return;
-  }
-
-  const email = req.body.email;
-  const photoFileName = req.body.photoFileName;
-
-  try {
-    const result = await User.saveImg(photoFileName, email);
-
-    res.status(201).json({ message: "Image updated in DB!" });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

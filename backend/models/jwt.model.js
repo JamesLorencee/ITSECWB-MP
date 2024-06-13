@@ -12,7 +12,6 @@ exports.checkIfBlacklisted = (token) => {
           if (rows.length > 0) {
             reject(rows[0]);
           } else {
-            console.log("hi");
             resolve(null);
           }
         }

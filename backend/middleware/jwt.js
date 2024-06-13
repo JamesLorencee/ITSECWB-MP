@@ -4,7 +4,6 @@ const BlackListDB = require("../models/jwt.model");
 
 // Function to add token to blacklist
 exports.addToBlacklist = (tokenId) => {
-  console.log("token", tokenId);
   return new Promise((resolve, reject) => {
     jwt.verify(
       tokenId,
@@ -32,18 +31,25 @@ exports.authenticateJWT = (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (token == null) return res.sendStatus(401);
+  if (!token) {
+    return res.status(401).json({ error: "invalid_token" });
+  }
+
   BlackListDB.checkIfBlacklisted(token)
     .then(() => {
       jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
-        console.log(err, user);
-        if (err) return res.sendStatus(403);
+        if (err) {
+          if (err.name === "TokenExpiredError") {
+            return res.status(401).json({ error: "expired_token" });
+          }
+          return res.status(401).json({ error: "invalid_token" });
+        }
         req.user = user;
         next();
       });
     })
     .catch(() => {
-      return res.sendStatus(403);
+      return res.status(401).json({ error: "invalid_token" });
     });
 };
 

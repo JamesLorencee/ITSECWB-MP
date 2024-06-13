@@ -3,15 +3,38 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AdminHomeComponent } from './admin/home/home.component';
-import { HomeComponent } from './user/home/home.component';
+import { UserHomeComponent } from './user/home/home.component';
 import { RoleGuardService } from './guards/role-guard.guard';
-
+import { PageSchemaComponent } from './page-schema/page-schema.component';
+import { LoginGuard } from './guards/login-guard.guard';
+import { AdminTestComponent } from './admin/test/test.component';
+import { UserTestComponent } from './user/test/test.component';
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
-  { path: 'login', component: LoginComponent, canActivate: [RoleGuardService], data: { redirect: true } },
-  { path: 'register', component: RegisterComponent, canActivate: [RoleGuardService], data: { redirect: true } },
-  { path: 'admin', component: AdminHomeComponent, canActivate: [RoleGuardService], data: { isAdmin: true } },
-  { path: 'home', component: HomeComponent, canActivate: [RoleGuardService], data: { isAdmin: false } },
+  { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
+  { path: 'register', component: RegisterComponent, canActivate: [LoginGuard] },
+  {
+    path: 'admin',
+    component: PageSchemaComponent,
+    canActivate: [RoleGuardService],
+    data: { isAdmin: true },
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'dashboard', component: AdminHomeComponent, canActivate: [RoleGuardService], data: { isAdmin: true } },
+      { path: 'damn', component: AdminTestComponent, canActivate: [RoleGuardService], data: { isAdmin: true } },
+    ],
+  },
+  {
+    path: 'user',
+    component: PageSchemaComponent,
+    canActivate: [RoleGuardService],
+    data: { isAdmin: false },
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'dashboard', component: UserHomeComponent, canActivate: [RoleGuardService], data: { isAdmin: false } },
+      { path: 'damn', component: UserTestComponent, canActivate: [RoleGuardService], data: { isAdmin: false } },
+    ],
+  },
 ];
 
 @NgModule({
