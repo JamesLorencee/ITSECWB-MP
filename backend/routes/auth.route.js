@@ -6,6 +6,13 @@ const router = express.Router();
 const User = require("../models/user");
 const authController = require("../controllers/auth.controller");
 const uploadSignUp = require("../middleware/multer");
+const rateLimit = require("express-rate-limit");
+const loginLimiter = rateLimit({
+  windowMs: 15 * 1000, // 15 seconds
+  limit: 5 * 2, //
+  message:
+    "There have been multiple requests made through this IP. Please try again after 15 minutes.",
+});
 const { authenticateJWT } = require("../middleware/jwt");
 
 router.get("/is-logged-in", authenticateJWT, (req, res) => {
@@ -24,6 +31,7 @@ router.delete("/logout", authController.logout);
 
 router.post(
   "/signup",
+  loginLimiter,
   uploadSignUp.single("profilePhoto"),
   (req, res, next) => {
     // If there is an error from fileFilter, it will be stored in req.fileFilterError by multer
@@ -37,6 +45,7 @@ router.post(
 
 router.post(
   "/signin",
+  loginLimiter,
   [
     body("email").isEmail().normalizeEmail().withMessage("Fix the email"),
     body("password")
@@ -44,6 +53,7 @@ router.post(
       .isLength({ min: 12 })
       .withMessage("Fix the password"),
   ],
+  loginLimiter,
   authController.signin
 );
 
