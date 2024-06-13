@@ -6,6 +6,21 @@ const router = express.Router();
 const User = require("../models/user");
 const authController = require("../controllers/auth.controller");
 const uploadSignUp = require("../middleware/multer");
+const { authenticateJWT } = require("../middleware/jwt");
+
+router.get("/is-logged-in", authenticateJWT, (req, res) => {
+  res.status(200).send(true);
+});
+
+router.get(
+  "/authenticate/:role",
+  authenticateJWT,
+  authController.authenticateRoles
+);
+
+router.post("/token", authController.token);
+
+router.delete("/logout", authController.logout);
 
 router.post(
   "/signup",
@@ -31,32 +46,5 @@ router.post(
   ],
   authController.signin
 );
-
-router.post(
-  "/saveImg",
-  [
-    body("email").isEmail().normalizeEmail(),
-    body("photoFileName")
-      .trim()
-      .not()
-      .isEmpty()
-      .withMessage("Photo is required.")
-      .custom((value) => {
-        const valid = [".jpg", ".jpeg", ".png"];
-        const extension = value.slice(value.lastIndexOf(".")).toLowerCase();
-        if (!valid.includes(extension)) {
-          throw new Error("Invalid file.");
-        }
-        return true;
-      }),
-  ],
-  authController.saveImg
-);
-
-router.post("/api/upload", multipartMiddleware, (req, res) => {
-  const file = req.files.profilePhoto;
-  const filePath = path.join("uploads", file.path.split("/").pop());
-  res.json({ filePath: filePath });
-});
 
 module.exports = router;
