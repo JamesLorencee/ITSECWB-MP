@@ -7,7 +7,6 @@ import { AppModule } from './app.module';
   template: '<router-outlet></router-outlet>',
   // imports: [RouterModule]
 })
-
 export class AppComponent {
   title(title: any) {
     throw new Error('Method not implemented.');

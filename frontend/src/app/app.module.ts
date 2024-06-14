@@ -9,11 +9,11 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app.routes';
 import { HttpClientModule } from '@angular/common/http';
-import { AdminHomeComponent } from './admin/home/home.component';
-import { UserHomeComponent } from './user/home/home.component';
 import { PageSchemaComponent } from './page-schema/page-schema.component';
-import { AdminTestComponent } from './admin/test/test.component';
-import { UserTestComponent } from './user/test/test.component';
+import { AdminHomeComponent } from './page-schema/admin/home/home.component';
+import { AdminTestComponent } from './page-schema/admin/test/test.component';
+import { UserHomeComponent } from './page-schema/user/home/home.component';
+import { UserTestComponent } from './page-schema/user/test/test.component';
 
 @NgModule({
   declarations: [
