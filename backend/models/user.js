@@ -51,7 +51,7 @@ module.exports = class User {
     });
   }
   static async updateRefreshToken(refreshToken, userId) {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     const hashed = await bcrypt.hash(refreshToken, salt);
     return new Promise((resolve, reject) => {
       db.execute(

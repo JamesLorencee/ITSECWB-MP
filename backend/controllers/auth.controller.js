@@ -123,7 +123,7 @@ exports.signup = async (req, res, next) => {
   const photoFileName = req.file.filename;
 
   try {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     const hashed = await bcrypt.hash(password, salt);
 
     const user = {
