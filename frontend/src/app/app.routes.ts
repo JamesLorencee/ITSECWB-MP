@@ -19,17 +19,15 @@ export const routes: Routes = [
     canActivate: [RoleGuardService],
     data: { isAdmin: true },
     children: [
-      { path: '*', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
-        pathMatch: 'full',
         component: AdminHomeComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: true },
       },
       {
         path: 'damn',
-        pathMatch: 'full',
         component: AdminTestComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: true },
@@ -45,14 +43,12 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
-        pathMatch: 'full',
         component: UserHomeComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: false },
       },
       {
         path: 'damn',
-        pathMatch: 'full',
         component: UserTestComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: false },
