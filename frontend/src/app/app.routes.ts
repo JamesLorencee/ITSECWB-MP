@@ -27,7 +27,7 @@ export const routes: Routes = [
         data: { isAdmin: true },
       },
       {
-        path: 'damn',
+        path: 'test',
         component: AdminTestComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: true },
@@ -48,7 +48,7 @@ export const routes: Routes = [
         data: { isAdmin: false },
       },
       {
-        path: 'damn',
+        path: 'test',
         component: UserTestComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: false },
