@@ -9,6 +9,9 @@ import { PageSchemaComponent } from './page-schema/page-schema.component';
 import { LoginGuard } from './guards/login-guard.guard';
 import { AdminTestComponent } from './page-schema/admin/test/test.component';
 import { UserTestComponent } from './page-schema/user/test/test.component';
+import { IncomeLogComponent } from './income-log/income-log.component';
+import { GenerateReportComponent } from './generate-report/generate-report.component';
+
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent, canActivate: [LoginGuard] },
@@ -50,6 +53,18 @@ export const routes: Routes = [
       {
         path: 'test',
         component: UserTestComponent,
+        canActivate: [RoleGuardService],
+        data: { isAdmin: false },
+      },
+      {
+        path: 'incomeLog',
+        component: IncomeLogComponent,
+        canActivate: [RoleGuardService],
+        data: { isAdmin: false },
+      },
+      {
+        path: 'generateReport',
+        component: GenerateReportComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: false },
       },

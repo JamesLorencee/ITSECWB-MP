@@ -57,6 +57,7 @@ export class RegisterComponent {
 
   onSubmit() {
     this.submitted = true;
+    console.log('Hello');
 
     if (this.registerForm.invalid) return;
 

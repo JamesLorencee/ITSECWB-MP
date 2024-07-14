@@ -1,3 +1,48 @@
-<p>User works!</p>
-<button routerLink="/" (click)="logout()">logout</button>
-<button routerLink="../test">Back</button>
+<app-main-template>
+  <div class="flex w-full justify-between">
+    <h1 class="text-2xl font-semibold tex-text">Expense Log</h1>
+    <button class="btn-primary">
+      <ng-icon name="matPlusOutline" size="1rem" class="text-text"></ng-icon>Add Expense
+    </button>
+  </div>
+  <hr class="h-[1px] w-full bg-neutral-100" />
+  <div class="relative mb-5 overflow-x-auto border-2 border-solid bg-white border-neutral-100 shadow-md sm:rounded-lg">
+    <table class="w-full text-left text-sm text-neutral-800 rtl:text-right">
+      <thead class="text-left text-base text-primary border-b-2">
+        <tr>
+          <th scope="col" class="px-6 py-3">ITEM</th>
+          <th scope="col" class="px-6 py-3">CATEGORY</th>
+          <th scope="col" class="px-6 py-3">DATE</th>
+
+          <th scope="col" class="px-6 py-3">PRICE</th>
+          <th scope="col" class="px-1 py-3 text-center">EDIT</th>
+          <th scope="col" class="px-1 py-3 text-center">REMOVE</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        <tr class="border-b text-left">
+          <th scope="row" class="whitespace-nowrap px-6 py-4 text-base font-semibold text-text">Colonel Curry</th>
+          <td class="px-6 py-4">Food</td>
+          <td class="px-6 py-4">07/14/24</td>
+
+          <td class="px-6 py-4">119.00</td>
+          <td class="px-2 py-4 text-center">
+            <button class="px-2 py-1" type="button">
+              <ng-icon name="matEditOutline" size="24px" class="mr-0 text-gray-500 hover:text-gray-900"></ng-icon>
+            </button>
+          </td>
+
+          <td class="px-2 py-4 text-center">
+            <button class="px-2 py-1" type="button">
+              <ng-icon
+                name="matDoNotDisturbOnOutline"
+                size="24px"
+                class="mr-0 text-gray-500 hover:text-gray-900"
+              ></ng-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-main-template>

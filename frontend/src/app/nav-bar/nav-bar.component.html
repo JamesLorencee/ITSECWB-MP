@@ -1,0 +1,28 @@
+<div class="sticky top-0 flex h-[100vh] gap-3.5 px-3.5 py-2">
+  <div class="flex flex-col items-center py-4 px-2">
+    <h1 class="text-4xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+      MakeCents
+    </h1>
+    <hr class="mb-4 h-[2px] w-full bg-neutral-100" />
+    <ul class="flex w-full list-none flex-col gap-2">
+      <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="expenseLog()">
+        <ng-icon name="matPaymentsSharp" size="2rem" class="text-text"></ng-icon>Expense Log
+      </button>
+      <hr class="h-[1px] w-full bg-neutral-100" />
+      <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="incomeLog()">
+        <ng-icon name="matSavingsSharp" size="2rem" class="text-text"></ng-icon>Income Log
+      </button>
+      <hr class="h-[1px] w-full bg-neutral-100" />
+
+      <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="generateReport()">
+        <ng-icon name="matPointOfSaleRound" size="2rem" class="text-text"></ng-icon>Generate Report
+      </button>
+      <hr class="h-[1px] w-full bg-neutral-100" />
+
+      <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="logout()">
+        <ng-icon name="matLogoutOutline" size="2rem" class="text-text"></ng-icon>Logout
+      </button>
+      <hr class="h-[1px] w-full bg-neutral-100" />
+    </ul>
+  </div>
+</div>
