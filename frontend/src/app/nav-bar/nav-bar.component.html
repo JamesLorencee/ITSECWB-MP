@@ -4,7 +4,7 @@
       MakeCents
     </h1>
     <hr class="mb-4 h-[2px] w-full bg-neutral-100" />
-    <ul class="flex w-full list-none flex-col gap-2">
+    <ul class="flex w-full list-none flex-col gap-2" *ngIf="!isAdmin">
       <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="expenseLog()">
         <ng-icon name="matPaymentsSharp" size="2rem" class="text-text"></ng-icon>Expense Log
       </button>
@@ -16,6 +16,26 @@
 
       <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="generateReport()">
         <ng-icon name="matPointOfSaleRound" size="2rem" class="text-text"></ng-icon>Generate Report
+      </button>
+      <hr class="h-[1px] w-full bg-neutral-100" />
+
+      <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="logout()">
+        <ng-icon name="matLogoutOutline" size="2rem" class="text-text"></ng-icon>Logout
+      </button>
+      <hr class="h-[1px] w-full bg-neutral-100" />
+    </ul>
+    <ul class="flex w-full list-none flex-col gap-2" *ngIf="isAdmin">
+      <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="userMgmt()">
+        <ng-icon name="matSupervisorAccountSharp" size="2rem" class="text-text"></ng-icon>User Mgmt
+      </button>
+      <hr class="h-[1px] w-full bg-neutral-100" />
+      <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="userLogs()">
+        <ng-icon name="matTrackChangesSharp" size="2rem" class="text-text"></ng-icon>User Logs
+      </button>
+      <hr class="h-[1px] w-full bg-neutral-100" />
+
+      <button class="flex items-center rounded-lg gap-3 py-2 px-2 hover:bg-neutral-200" (click)="systemSettings()">
+        <ng-icon name="matSettingsRound" size="2rem" class="text-text"></ng-icon>System Settings
       </button>
       <hr class="h-[1px] w-full bg-neutral-100" />
 

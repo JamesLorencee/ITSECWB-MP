@@ -1,5 +1,51 @@
 <app-main-template>
-  <p>Admin works!</p>
-  <button (click)="logout()">logout</button>
-  <button routerLink="../test">Back</button>
+  <div class="flex w-full justify-between">
+    <h1 class="text-2xl font-semibold tex-text">User Management</h1>
+    <select
+      class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+    >
+      <option value="" disabled selected>Filter by role</option>
+      <option value="1">User</option>
+      <option value="2">Admin</option>
+    </select>
+  </div>
+  <hr class="h-[1px] w-full bg-neutral-100" />
+  <div class="relative mb-5 overflow-x-auto border-2 border-solid bg-white border-neutral-100 shadow-md sm:rounded-lg">
+    <table class="w-full text-center text-sm text-neutral-800 rtl:text-right">
+      <thead class="text-base text-primary border-b-2">
+        <tr>
+          <th scope="col" class="px-6 py-3">USER</th>
+          <th scope="col" class="px-6 py-3">EMAIL</th>
+          <th scope="col" class="px-6 py-3">ROLE</th>
+          <th scope="col" class="px-6 py-3">LAST LOGIN</th>
+          <!-- Note: We can remove this if di kaya iimplement -->
+          <th scope="col" class="px-1 py-3 text-center">EDIT</th>
+          <th scope="col" class="px-1 py-3 text-center">REMOVE</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white">
+        <tr class="border-b">
+          <th scope="row" class="whitespace-nowrap px-6 py-4 text-base font-semibold text-text">John Doe</th>
+          <td class="px-6 py-4">user&#64;gmail.com</td>
+          <td class="px-6 py-4">User</td>
+          <td class="px-6 py-4">5 hours ago</td>
+          <td class="px-2 py-4">
+            <button class="px-2 py-1" type="button">
+              <ng-icon name="matEditOutline" size="24px" class="mr-0 text-gray-500 hover:text-gray-900"></ng-icon>
+            </button>
+          </td>
+
+          <td class="px-2 py-4">
+            <button class="px-2 py-1" type="button">
+              <ng-icon
+                name="matDoNotDisturbOnOutline"
+                size="24px"
+                class="mr-0 text-gray-500 hover:text-gray-900"
+              ></ng-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </app-main-template>

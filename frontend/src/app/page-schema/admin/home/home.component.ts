@@ -12,8 +12,4 @@ export class AdminHomeComponent {
     private authService: AuthService,
     private router: Router,
   ) {}
-  logout() {
-    this.authService.signout();
-    this.router.navigateByUrl('/');
-  }
 }

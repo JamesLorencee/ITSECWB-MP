@@ -7,10 +7,10 @@ import { UserHomeComponent } from './page-schema/user/home/home.component';
 import { RoleGuardService } from './guards/role-guard.guard';
 import { PageSchemaComponent } from './page-schema/page-schema.component';
 import { LoginGuard } from './guards/login-guard.guard';
-import { AdminTestComponent } from './page-schema/admin/test/test.component';
-import { UserTestComponent } from './page-schema/user/test/test.component';
-import { IncomeLogComponent } from './income-log/income-log.component';
-import { GenerateReportComponent } from './generate-report/generate-report.component';
+import { IncomeLogComponent } from './page-schema/user/income-log/income-log.component';
+import { GenerateReportComponent } from './page-schema/user/generate-report/generate-report.component';
+import { UserLogsComponent } from './page-schema/admin/user-logs/user-logs.component';
+import { SystemSettingsComponent } from './page-schema/admin/system-settings/system-settings.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -30,8 +30,14 @@ export const routes: Routes = [
         data: { isAdmin: true },
       },
       {
-        path: 'test',
-        component: AdminTestComponent,
+        path: 'logs',
+        component: UserLogsComponent,
+        canActivate: [RoleGuardService],
+        data: { isAdmin: true },
+      },
+      {
+        path: 'settings',
+        component: SystemSettingsComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: true },
       },
@@ -47,12 +53,6 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: UserHomeComponent,
-        canActivate: [RoleGuardService],
-        data: { isAdmin: false },
-      },
-      {
-        path: 'test',
-        component: UserTestComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: false },
       },

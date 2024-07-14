@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-nav-bar',
@@ -13,6 +14,20 @@ export class NavBarComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
   ) {}
+
+  isAdmin: boolean = false;
+
+  ngOnInit() {
+    const accessToken = this.authService.getAccessToken();
+    if (!accessToken) {
+      return;
+    }
+    const decoded: any = jwtDecode(accessToken);
+    this.isAdmin = decoded.isAdmin;
+    console.log(this.isAdmin);
+  }
+
+  // User Pages
   expenseLog() {
     this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
   }
@@ -22,6 +37,20 @@ export class NavBarComponent {
   generateReport() {
     this.router.navigate(['../generateReport'], { relativeTo: this.activatedRoute });
   }
+
+  // Admin Pages
+  userMgmt() {
+    this.router.navigate(['../dashboard'], { relativeTo: this.activatedRoute });
+  }
+
+  userLogs() {
+    this.router.navigate(['../logs'], { relativeTo: this.activatedRoute });
+  }
+
+  systemSettings() {
+    this.router.navigate(['../settings'], { relativeTo: this.activatedRoute });
+  }
+
   logout() {
     this.authService.signout();
     this.router.navigateByUrl('/');
