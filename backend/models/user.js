@@ -1,3 +1,4 @@
+require("dotenv").config();
 const db = require("../util/database");
 const bcrypt = require("bcryptjs");
 
@@ -20,7 +21,11 @@ module.exports = class User {
                         reject(err);
                     } else {
                         if (rows.length > 0) {
-                            resolve(rows[0]);
+                            if (rows[0] == "" || rows[0] == null)
+                                resolve(null);
+                            if (validateRefreshToken(rows[0]))
+                                resolve(rows[0]);
+                            reject(err);
                         } else {
                             resolve(null);
                         }
@@ -31,7 +36,6 @@ module.exports = class User {
     }
 
     static async deleteRefreshToken(userId) {
-        console.log(userId);
         return new Promise((resolve, reject) => {
             db.execute(
                 "UPDATE `users` SET refreshToken = null WHERE id = ?",

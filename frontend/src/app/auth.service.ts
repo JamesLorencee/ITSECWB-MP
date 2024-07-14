@@ -1,61 +1,33 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, catchError, map, mergeMap, of, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, catchError, mergeMap, of } from 'rxjs';
+import { env } from './environment/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:3000/auth';
-  private token = '';
+  private baseUrl = `${env.baseUrl}auth`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   //done
   signin(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signin`, { email, password }).pipe(
-      tap((val: any) => {
-        localStorage.setItem('accessToken', val.accessToken);
-        localStorage.setItem('refreshToken', val.refreshToken);
-      }),
-    );
+    return this.http.post(`${this.baseUrl}/signin`, { email, password });
   }
 
   //done
   signout(): void {
-    const token = this.getAccessToken();
-    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-
-    this.http.delete<any>(`${this.baseUrl}/logout`, { headers: headers }).subscribe(() => {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-    });
-  }
-
-  //done
-  getRefreshToken(): string | null {
-    return localStorage.getItem('refreshToken');
-  }
-
-  //done
-  getAccessToken(): string | null {
-    return localStorage.getItem('accessToken');
+    this.http.delete<any>(`${this.baseUrl}/logout`);
   }
 
   compareRole(role: boolean): Observable<boolean> {
-    var token = this.getAccessToken();
-    var headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-
-    return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`, { headers: headers }).pipe(
+    return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`).pipe(
       catchError((error) => {
         if (error.error.error == 'expired_token') {
-          return this.http.post<any>(`${this.baseUrl}/token`, { refreshToken: this.getRefreshToken() }).pipe(
+          return this.http.get<any>(`${this.baseUrl}/token`).pipe(
             mergeMap((value) => {
-              localStorage.setItem('accessToken', value.accessToken);
-              token = this.getAccessToken();
-
-              headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-              return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`, { headers: headers }).pipe(
+              return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`).pipe(
                 (value) => {
                   return value;
                 },
@@ -74,21 +46,12 @@ export class AuthService {
 
   //done
   isLoggedIn(): Observable<boolean> {
-    var token = this.getAccessToken();
-    var headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    if (!token) {
-      return of(false);
-    }
-    return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`, { headers: headers }).pipe(
+    return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`).pipe(
       catchError((error) => {
         if (error.error.error == 'expired_token') {
-          return this.http.post<any>(`${this.baseUrl}/token`, { refreshToken: this.getRefreshToken() }).pipe(
+          return this.http.get<any>(`${this.baseUrl}/token`).pipe(
             mergeMap((value) => {
-              localStorage.setItem('accessToken', value.accessToken);
-              token = this.getAccessToken();
-
-              headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-              return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`, { headers: headers }).pipe(
+              return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`).pipe(
                 (value) => {
                   return value;
                 },
@@ -119,3 +82,4 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/signup`, formData);
   }
 }
+
