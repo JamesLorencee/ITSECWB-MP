@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const rateLimit = require("express-rate-limit");
 
 const authRoutes = require("./routes/auth.route");
+const incomeRoutes = require("./routes/income.route");
 
 const db = require("./util/database");
 
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/incomeLogs", incomeRoutes);
 
 app.use(errorController.get404);
 

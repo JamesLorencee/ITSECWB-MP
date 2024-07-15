@@ -21,34 +21,31 @@ export class UserHomeComponent {
   idNum = 0;
   submitted = false;
 
+  // TO UPDATE: Call categorylist
   categories: string[] = [
     'Food & Drinks',
     'Transportation',
     'Shopping',
     'Financial Expenses',
     'Housing & Utilities',
-    'Others'
+    'Others',
   ];
 
   addForm: FormGroup = this.fb.group({
     addItem: ['', Validators.required],
     addCategory: ['', Validators.required],
     addDate: ['', Validators.required],
-    addPrice: ['', Validators.required]
+    addPrice: ['', Validators.required],
   });
 
   toggleModal(idNum: number, isModalOpen?: boolean, expenseID?: number) {
     if (isModalOpen != null) this.isModalOpen = isModalOpen;
     else this.isModalOpen = !this.isModalOpen;
     this.idNum = idNum;
-
-
   }
 
   logout() {
     this.authService.signout();
     this.router.navigateByUrl('/');
   }
-
-
 }
