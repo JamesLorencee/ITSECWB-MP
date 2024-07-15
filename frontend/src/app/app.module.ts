@@ -30,6 +30,14 @@ import * as MaterialIconsRound from '@ng-icons/material-icons/round';
 import * as MaterialIconsSharp from '@ng-icons/material-icons/sharp';
 
 // Material
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+//Calendar Import
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
   declarations: [
@@ -47,6 +55,7 @@ import * as MaterialIconsSharp from '@ng-icons/material-icons/sharp';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
@@ -59,8 +68,15 @@ import * as MaterialIconsSharp from '@ng-icons/material-icons/sharp';
       ...MaterialIconsRound,
       ...MaterialIconsSharp,
     }),
+    MatDatepickerModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatSelectModule,
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
