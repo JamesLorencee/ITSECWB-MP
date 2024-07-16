@@ -22,4 +22,12 @@ export class MgmtService {
   getUserByID(userId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/edit/${userId}`, { withCredentials: true });
   }
+
+  saveEdit(userId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/role/${userId}`, { withCredentials: true });
+  }
+
+  saveDeact(userId: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/active/${userId}`, { withCredentials: true });
+  }
 }

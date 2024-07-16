@@ -180,4 +180,34 @@ module.exports = class User {
       );
     });
   }
+
+  static async setRole(uid) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        `UPDATE users 
+        SET isAdmin = 1 - isAdmin
+        WHERE (id = ?);`,
+        [uid],
+        (err) => {
+          if (err) reject(err);
+          else resolve(null);
+        }
+      );
+    });
+  }
+
+  static async setActive(uid) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        `UPDATE users 
+        SET isActive = 1 - isActive
+        WHERE (id = ?);`,
+        [uid],
+        (err) => {
+          if (err) reject(err);
+          else resolve(null);
+        }
+      );
+    });
+  }
 };

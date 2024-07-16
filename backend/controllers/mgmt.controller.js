@@ -39,3 +39,29 @@ exports.getLogs = async (req, res) => {
     }
   }
 };
+
+exports.setRole = async (req, res) => {
+  const uid = req.params.userId;
+  try {
+    const setRole = await User.setRole(uid);
+    res.json({ res: setRole });
+  } catch (err) {
+    res.status(500).json({ message: "EDIT User Role Error", err: err });
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+  }
+};
+
+exports.setActive = async (req, res) => {
+  const uid = req.params.userId;
+  try {
+    const setActive = await User.setActive(uid);
+    res.json({ res: setActive });
+  } catch (err) {
+    res.status(500).json({ message: "EDIT User Active Error", err: err });
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+  }
+};

@@ -3,7 +3,7 @@ import { AuthService } from '../../../auth.service';
 import { Router } from '@angular/router';
 import { MgmtService } from '../../../services/mgmt.service';
 import { jwtDecode } from 'jwt-decode'; // Assuming jwt-decode is imported correctly
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-home',
@@ -23,11 +23,10 @@ export class AdminHomeComponent {
   isModalOpen = false;
   expenseID = 0;
   idNum = 0;
-  submitted = false;
 
   editForm: FormGroup = this.fb.group({
     editName: [{ value: '-', disabled: true }],
-    editRole: ['', Validators.required],
+    editRole: new FormControl<boolean | null>(false),
   });
   editID: string = '';
 
@@ -83,7 +82,13 @@ export class AdminHomeComponent {
     });
   }
 
-  saveEdit(uid: any) {}
+  saveEdit(uid: any) {
+    this.mgmtService.saveEdit(uid).subscribe(() => {
+      this.toggleModal(0, false);
+      this.editForm.reset();
+      this.viewUsers();
+    });
+  }
 
   deactUser(uid: any) {
     this.mgmtService.getUserByID(uid).subscribe((res) => {
@@ -103,5 +108,11 @@ export class AdminHomeComponent {
     });
   }
 
-  saveDeact(uid: any) {}
+  saveDeact(uid: any) {
+    this.mgmtService.saveDeact(uid).subscribe(() => {
+      this.toggleModal(0, false);
+      this.deactForm.reset();
+      this.viewUsers();
+    });
+  }
 }
