@@ -35,14 +35,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
-app.use((req, res, next) => {
-  const send = res.send;
-  res.send = function (body) {
-    console.log("Headers after all middleware:", res.getHeaders());
-    send.call(this, body);
-  };
-  next();
-});
+
 app.use("/auth", authRoutes);
 app.use("/incomeLogs", incomeRoutes);
 app.use("/expenseLogs", expenseRoutes);
