@@ -13,57 +13,37 @@ export class AuthService {
 
   //done
   signin(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signin`, { email, password });
+    return this.http.post(`${this.baseUrl}/signin`,
+      { email, password },
+      { withCredentials: true }
+    );
   }
 
   //done
-  signout(): void {
-    this.http.delete<any>(`${this.baseUrl}/logout`);
+  signout(): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/logout`,
+      { withCredentials: true }
+    )
   }
 
   compareRole(role: boolean): Observable<boolean> {
-    return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`).pipe(
+    return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`,
+      { withCredentials: true }
+    ).pipe(
       catchError((error) => {
-        if (error.error.error == 'expired_token') {
-          return this.http.get<any>(`${this.baseUrl}/token`).pipe(
-            mergeMap((value) => {
-              return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`).pipe(
-                (value) => {
-                  return value;
-                },
-                catchError((error) => {
-                  return of(false);
-                }),
-              );
-            }),
-          );
-        } else {
-          return of(false);
-        }
+        return of(false);
       }),
+      (value) => { return value },
     );
   }
 
   //done
   isLoggedIn(): Observable<boolean> {
-    return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`).pipe(
+    return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`,
+      { withCredentials: true }
+    ).pipe(
       catchError((error) => {
-        if (error.error.error == 'expired_token') {
-          return this.http.get<any>(`${this.baseUrl}/token`).pipe(
-            mergeMap((value) => {
-              return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`).pipe(
-                (value) => {
-                  return value;
-                },
-                catchError((error) => {
-                  return of(false);
-                }),
-              );
-            }),
-          );
-        } else {
-          return of(false);
-        }
+        return of(false);
       }),
       (value) => {
         return value;

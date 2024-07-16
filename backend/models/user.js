@@ -1,6 +1,7 @@
 require("dotenv").config();
 const db = require("../util/database");
 const bcrypt = require("bcryptjs");
+const { validateRefreshToken } = require("./jwt.model");
 
 module.exports = class User {
     constructor(name, email, password, phoneNumber, photoFileName) {
@@ -21,13 +22,11 @@ module.exports = class User {
                         reject(err);
                     } else {
                         if (rows.length > 0) {
-                            if (rows[0] == "" || rows[0] == null)
-                                resolve(null);
-                            if (validateRefreshToken(rows[0]))
-                                resolve(rows[0]);
-                            reject(err);
+                            if (rows[0].refreshToken == "" || rows[0].refreshToken == null)
+                                reject(null);
+                            resolve(rows[0].refreshToken);
                         } else {
-                            resolve(null);
+                            reject(null);
                         }
                     }
                 }

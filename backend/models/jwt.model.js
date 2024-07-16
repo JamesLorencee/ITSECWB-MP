@@ -1,4 +1,5 @@
 const db = require("../util/database");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 exports.validateRefreshToken = (refreshToken) => {

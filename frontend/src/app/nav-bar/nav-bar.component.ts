@@ -13,19 +13,9 @@ export class NavBarComponent {
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-  ) {}
+  ) { }
 
   isAdmin: boolean = false;
-
-  ngOnInit() {
-    const accessToken = this.authService.getAccessToken();
-    if (!accessToken) {
-      return;
-    }
-    const decoded: any = jwtDecode(accessToken);
-    this.isAdmin = decoded.isAdmin;
-    console.log(this.isAdmin);
-  }
 
   // User Pages
   expenseLog() {
@@ -52,7 +42,8 @@ export class NavBarComponent {
   }
 
   logout() {
-    this.authService.signout();
-    this.router.navigateByUrl('/');
+    this.authService.signout().subscribe(() => {
+      this.router.navigateByUrl('/');
+    })
   }
 }

@@ -42,8 +42,8 @@ export class LoginComponent {
     }
 
     this.authService.signin(this.loginForm.value.email, this.loginForm.value.password).subscribe({
-      next: (isAdmin) => {
-        if (isAdmin) {
+      next: (user) => {
+        if (user.isAdmin) {
           this.router.navigate(['/admin']); // Redirect admin to admin dashboard
         } else {
           this.router.navigate(['/user']); // Redirect user to user dashboard
