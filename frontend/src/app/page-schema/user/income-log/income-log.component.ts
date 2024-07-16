@@ -13,7 +13,7 @@ export class IncomeLogComponent {
   constructor(
     private incomeService: IncomeService,
     private fb: FormBuilder,
-  ) { }
+  ) {}
   incomeList: any;
   categoryList: any;
   editID: string = '';
@@ -75,6 +75,7 @@ export class IncomeLogComponent {
         .subscribe(() => {
           this.toggleModal(1, false);
           this.addForm.reset();
+          this.submitted = false;
           this.viewIncome();
         });
     }
@@ -113,6 +114,7 @@ export class IncomeLogComponent {
         .subscribe(() => {
           this.toggleModal(2, false);
           this.editForm.reset();
+          this.submitted = false;
           this.viewIncome();
         });
     }

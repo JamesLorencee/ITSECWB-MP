@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-nav-bar',
@@ -13,9 +12,16 @@ export class NavBarComponent {
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-  ) { }
+  ) {}
 
   isAdmin: boolean = false;
+
+  ngOnInit() {
+    this.authService.compareRole(true).subscribe((isAdmin) => {
+      this.isAdmin = isAdmin;
+      console.log(this.isAdmin);
+    });
+  }
 
   // User Pages
   expenseLog() {
@@ -44,6 +50,6 @@ export class NavBarComponent {
   logout() {
     this.authService.signout().subscribe(() => {
       this.router.navigateByUrl('/');
-    })
+    });
   }
 }
