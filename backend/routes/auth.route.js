@@ -48,13 +48,12 @@ router.post(
     "/signin",
     loginLimiter,
     [
-        body("email").isEmail().normalizeEmail().withMessage("Fix the email"),
+        body("email").isEmail().withMessage("Fix the email"),
         body("password")
             .trim()
             .isLength({ min: 12 })
             .withMessage("Fix the password"),
     ],
-    loginLimiter,
     authController.signin
 );
 

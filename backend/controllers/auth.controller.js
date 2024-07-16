@@ -90,6 +90,7 @@ exports.signin = async (req, res) => {
         if (!user) return res.status(401).json({ message: "Invalid login." });
 
         const match = await bcrypt.compare(password, user.password);
+        console.log(match)
         if (!match) return res.status(401).json({ message: "Invalid login." });
 
         const userAccess = {
