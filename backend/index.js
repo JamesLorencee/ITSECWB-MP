@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 
 const authRoutes = require("./routes/auth.route");
 const incomeRoutes = require("./routes/income.route");
+const expenseRoutes = require("./routes/expense.route");
 const mgmtRoutes = require("./routes/mgmt.route");
 
 const db = require("./util/database");
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 
 app.use("/auth", authRoutes);
 app.use("/incomeLogs", incomeRoutes);
+app.use("/expenseLogs", expenseRoutes);
 app.use("/mgmt", mgmtRoutes);
 
 app.use(errorController.get404);
