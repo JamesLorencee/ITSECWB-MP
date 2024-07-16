@@ -57,7 +57,7 @@ exports.edit = async (req, res) => {
 };
 
 exports.save = async (req, res) => {
-  const uid = req.body.uid;
+  const uid = req.user.userId;
   const expenseID = req.body.expenseID;
   const expenseItem = req.body.expenseItem;
   const expenseDate = req.body.expenseDate;

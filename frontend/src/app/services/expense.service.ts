@@ -33,7 +33,6 @@ export class ExpenseService {
   }
 
   saveExpense(
-    uid: string,
     expenseDate: Date,
     expenseItem: string,
     expenseAmt: number,
@@ -43,7 +42,6 @@ export class ExpenseService {
     return this.http.post(
       `${this.baseUrl}/`,
       {
-        uid: uid,
         expenseDate: expenseDate,
         expenseItem: expenseItem,
         expenseAmt: expenseAmt,

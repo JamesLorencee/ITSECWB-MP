@@ -21,7 +21,6 @@ export class UserHomeComponent {
   // Default Variables
   expenseList: any;
   categoryList: any;
-  uid: string = '';
   editID: string = '';
 
   // Modal Variables
@@ -83,6 +82,7 @@ export class UserHomeComponent {
         .subscribe(() => {
           this.toggleModal(1, false);
           this.addForm.reset();
+          this.submitted = false;
           this.viewExpense();
         });
     }
@@ -105,9 +105,9 @@ export class UserHomeComponent {
   saveExpense(expenseID: string) {
     this.submitted = true;
     if (this.editForm.valid) {
+      console.log(expenseID);
       this.expenseService
         .saveExpense(
-          this.uid,
           this.editForm.get(['editDate'])!.value,
           this.editForm.get(['editItem'])!.value,
           this.editForm.get(['editAmt'])!.value,
