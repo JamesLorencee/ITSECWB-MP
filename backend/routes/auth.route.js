@@ -1,9 +1,6 @@
 const express = require("express");
-const multipart = require("connect-multiparty");
-const multipartMiddleware = multipart({ uploadDir: "../frontend/uploads" });
 const { body } = require("express-validator");
 const router = express.Router();
-const User = require("../models/user");
 const authController = require("../controllers/auth.controller");
 const uploadSignUp = require("../middleware/multer");
 const checkfile = require("../middleware/check-file");
@@ -17,7 +14,6 @@ const loginLimiter = rateLimit({
     },
 });
 const { authenticateJWT } = require("../middleware/jwt");
-const checkFile = require("../middleware/check-file");
 
 router.get("/is-logged-in", authenticateJWT, (req, res) => {
     res.status(200).send(true);

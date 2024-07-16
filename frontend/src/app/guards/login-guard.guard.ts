@@ -12,25 +12,19 @@ export class LoginGuard implements CanActivate {
   constructor(
     private router: Router,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.authService.isLoggedIn().pipe(
-      map((isLoggedIn: boolean) => {
+      map((isLoggedIn: any) => {
         if (isLoggedIn) {
-          const accessToken = this.authService.getAccessToken();
-          if (!accessToken) {
-            return false;
-          }
-
-          const decoded: any = jwtDecode(accessToken);
-          const isAdmin = decoded.isAdmin;
-
-          if (isAdmin) {
-            this.router.navigate(['/admin']); // Redirect admin to admin dashboard
-          } else {
-            this.router.navigate(['/user']); // Redirect user to user dashboard
-          }
+          this.authService.compareRole(true).subscribe((isAdmin) => {
+            if (isAdmin) {
+              this.router.navigate(['/admin']); // Redirect admin to admin dashboard
+            } else {
+              this.router.navigate(['/user']); // Redirect user to user dashboard
+            }
+          });
 
           return false; // Return false since navigation is handled by redirects
         } else {

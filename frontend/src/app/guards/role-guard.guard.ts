@@ -11,11 +11,10 @@ export class RoleGuardService implements CanActivate {
   constructor(
     private router: Router,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     const isAdminData = route.data['isAdmin'];
-    console.log(state.url);
 
     return this.authService.compareRole(isAdminData).pipe(
       map((authorized) => {
