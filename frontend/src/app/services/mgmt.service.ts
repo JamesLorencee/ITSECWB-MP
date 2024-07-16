@@ -18,4 +18,8 @@ export class MgmtService {
   getLogs(): Observable<any> {
     return this.http.get(`${this.baseUrl}/logs`, { withCredentials: true });
   }
+
+  getUserByID(userId: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/edit/${userId}`, { withCredentials: true });
+  }
 }

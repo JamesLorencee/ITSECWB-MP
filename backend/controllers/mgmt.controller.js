@@ -14,6 +14,19 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+exports.getUserByID = async (req, res) => {
+  try {
+    const uid = req.params.userId;
+    const user = await User.findByID(uid);
+    res.json({ user: user });
+  } catch (err) {
+    res.status(500).json({ message: "GET Users Error", err: err });
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+  }
+};
+
 exports.getLogs = async (req, res) => {
   try {
     console.log("LOGS");

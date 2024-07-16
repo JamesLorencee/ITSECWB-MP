@@ -96,6 +96,26 @@ module.exports = class User {
     });
   }
 
+  static findByID(id) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        "SELECT id, name, email, isAdmin, isActive FROM users WHERE id LIKE ?",
+        [id],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (rows.length > 0) {
+              resolve(rows[0]);
+            } else {
+              resolve(null);
+            }
+          }
+        }
+      );
+    });
+  }
+
   static async getUUID() {
     return new Promise((resolve, reject) => {
       db.execute(`SELECT UUID() AS uuid`, [], (err, rows) => {

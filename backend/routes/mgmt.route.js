@@ -6,5 +6,6 @@ const { authenticateJWT } = require("../middleware/jwt");
 
 router.get("/", authenticateJWT, mgmtController.getUsers);
 router.get("/logs", authenticateJWT, mgmtController.getLogs);
+router.get("/edit/:userId", authenticateJWT, mgmtController.getUserByID);
 
 module.exports = router;
