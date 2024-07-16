@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
+const xss = require("xss-clean");
 
 const authRoutes = require("./routes/auth.route");
 const incomeRoutes = require("./routes/income.route");
@@ -18,6 +19,7 @@ const app = express();
 const ports = process.env.PORT || 3000;
 
 app.use(helmet()); // Sets HTTP response headers (Hides X-Powered-By to avoid targeted Express attacks, among others)
+app.use(xss()); // Sanitizes data passed in req.body, req.params, or req.query
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(
