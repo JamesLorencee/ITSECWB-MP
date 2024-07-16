@@ -29,7 +29,6 @@ export class UserHomeComponent {
   expenseID = 0;
   idNum = 0;
   submitted = false;
-  
 
   addForm: FormGroup = this.fb.group({
     addItem: ['', Validators.required],
@@ -46,11 +45,6 @@ export class UserHomeComponent {
   });
 
   ngOnInit() {
-    const accessToken = this.authService.getAccessToken();
-    const decoded: any = jwtDecode(accessToken!);
-    console.log(decoded);
-    this.uid = decoded.userId;
-
     this.viewExpense();
   }
 
@@ -65,9 +59,8 @@ export class UserHomeComponent {
     }
   }
 
-
   viewExpense() {
-    this.expenseService.getExpense(this.uid).subscribe((res) => {
+    this.expenseService.getExpense().subscribe((res) => {
       console.log(res);
       if (res.expenseList.length > 0) {
         this.expenseList = res.expenseList;
@@ -82,7 +75,6 @@ export class UserHomeComponent {
       console.log(this.addForm.value);
       this.expenseService
         .addExpense(
-          this.uid,
           this.addForm.get(['addDate'])!.value,
           this.addForm.get(['addItem'])!.value,
           this.addForm.get(['addAmt'])!.value,
@@ -137,7 +129,7 @@ export class UserHomeComponent {
     });
   }
 
-// USER LOGOUT DO NOT TOUCH!
+  // USER LOGOUT DO NOT TOUCH!
   logout() {
     this.authService.signout();
     this.router.navigateByUrl('/');
