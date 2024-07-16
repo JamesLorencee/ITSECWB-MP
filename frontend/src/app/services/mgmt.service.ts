@@ -1,0 +1,21 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class MgmtService {
+  private baseUrl = 'http://localhost:3000/mgmt';
+  private token = '';
+
+  constructor(private http: HttpClient) {}
+
+  getUsers(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/`, { withCredentials: true });
+  }
+
+  getLogs(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/logs`, { withCredentials: true });
+  }
+}

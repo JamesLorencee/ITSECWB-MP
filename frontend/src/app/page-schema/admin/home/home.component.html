@@ -24,10 +24,10 @@
         </tr>
       </thead>
       <tbody class="bg-white">
-        <tr class="border-b">
-          <th scope="row" class="whitespace-nowrap px-6 py-4 text-base font-semibold text-text">John Doe</th>
-          <td class="px-6 py-4">user&#64;gmail.com</td>
-          <td class="px-6 py-4">User</td>
+        <tr class="border-b" *ngFor="let user of userList; let i = index">
+          <th scope="row" class="whitespace-nowrap px-6 py-4 text-base font-semibold text-text">{{ user.name }}</th>
+          <td class="px-6 py-4">{{ user.email }}</td>
+          <td class="px-6 py-4">{{ user.isAdmin ? 'Admin' : 'User' }}</td>
           <td class="px-6 py-4">5 hours ago</td>
           <td class="px-2 py-4">
             <button class="px-2 py-1" type="button">

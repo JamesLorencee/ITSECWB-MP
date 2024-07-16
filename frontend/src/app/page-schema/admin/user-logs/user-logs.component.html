@@ -29,46 +29,20 @@
         <tr>
           <th scope="col" class="px-6 py-3">TIME</th>
           <th scope="col" class="px-6 py-3">USER</th>
+          <th scope="col" class="px-6 py-3">ROLE</th>
           <th scope="col" class="px-6 py-3">EVENT TYPE</th>
           <th scope="col" class="px-6 py-3">ACTION</th>
+          <th scope="col" class="px-6 py-3">DETAILS</th>
         </tr>
       </thead>
       <tbody class="bg-white">
-        <tr class="border-b">
-          <td class="px-6 py-4">July 14, 2023 11:25PM</td>
-          <td class="px-6 py-4">user&#64;gmail.com</td>
-          <td class="px-6 py-4">Authentication</td>
-          <td class="px-6 py-4">Logged out</td>
-        </tr>
-        <tr class="border-b">
-          <td class="px-6 py-4">July 14, 2023 11:20PM</td>
-          <td class="px-6 py-4">user&#64;gmail.com</td>
-          <td class="px-6 py-4">Authentication</td>
-          <td class="px-6 py-4">Logged In</td>
-        </tr>
-        <tr class="border-b">
-          <td class="px-6 py-4">July 14, 2023 10:20PM</td>
-          <td class="px-6 py-4">user&#64;gmail.com</td>
-          <td class="px-6 py-4">Expenses</td>
-          <td class="px-6 py-4">Updated</td>
-        </tr>
-        <tr class="border-b">
-          <td class="px-6 py-4">July 14, 2023 09:20PM</td>
-          <td class="px-6 py-4">user&#64;gmail.com</td>
-          <td class="px-6 py-4">Income</td>
-          <td class="px-6 py-4">Deleted</td>
-        </tr>
-        <tr class="border-b">
-          <td class="px-6 py-4">July 14, 2023 09:18PM</td>
-          <td class="px-6 py-4">user&#64;gmail.com</td>
-          <td class="px-6 py-4">Reports</td>
-          <td class="px-6 py-4">Downloaded?</td>
-        </tr>
-        <tr class="border-b">
-          <td class="px-6 py-4">July 14, 2023 09:18PM</td>
-          <td class="px-6 py-4">user&#64;gmail.com</td>
-          <td class="px-6 py-4">Administration</td>
-          <td class="px-6 py-4">Modified ekek</td>
+        <tr class="border-b" *ngFor="let log of logList; let i = index">
+          <td class="px-6 py-4">{{ log.formatDate }}</td>
+          <td class="px-6 py-4">{{ log.isAdmin ? 'Admin' : 'User' }}</td>
+          <td class="px-6 py-4">{{ log.email }}</td>
+          <td class="px-6 py-4">{{ log.eventType }}</td>
+          <td class="px-6 py-4">{{ log.action }}</td>
+          <td class="px-6 py-4 text-balance" [innerHTML]="getFormattedDetails(log.details)"></td>
         </tr>
       </tbody>
     </table>

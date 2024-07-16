@@ -13,20 +13,20 @@ const {
 
 exports.authenticateRoles = (req, res) => {
     const role = req.params.role;
-    console.log(req.user.isAdmin ? "true" : "false", role);
     if (req.user.isAdmin ? "true" : "false" == role)
         return res.status(200).send(true);
-    else return res.status(401).json({ error: "unauthorized" });
+    return res.status(200).send(false);
 };
 
 exports.logout = async (req, res) => {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader && authHeader.split(" ")[1];
+    const token = req.cookies["authorization"];
+
     addToBlacklist(token)
         .then((val) => {
             if (!val) return res.status(403).json({ error: "invalid_token" });
 
             User.deleteRefreshToken(val).then(() => {
+                res.cookie("authorization", "", { httpOnly: true, secure: true, sameSite: 'None' });
                 res.sendStatus(204);
             });
         })
@@ -43,7 +43,7 @@ exports.token = async (req, res) => {
     }
 
     try {
-        const user = await jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+        const user = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
         const storedRefreshToken = await User.getRefreshToken(user.userId);
 
         if (!storedRefreshToken.refreshToken) {
@@ -90,6 +90,7 @@ exports.signin = async (req, res) => {
         if (!user) return res.status(401).json({ message: "Invalid login." });
 
         const match = await bcrypt.compare(password, user.password);
+        console.log(match)
         if (!match) return res.status(401).json({ message: "Invalid login." });
 
         const userAccess = {
@@ -98,18 +99,21 @@ exports.signin = async (req, res) => {
             isAdmin: user.isAdmin,
         };
 
-        const accessToken = generateAccessToken(userAccess);
         const refreshToken = generateRefreshToken(userAccess);
 
-        User.updateRefreshToken(refreshToken, user.id);
-        console.log(user);
+        User.updateRefreshToken(refreshToken, userAccess.userId).then(() => {
+            generateAccessToken(userAccess).then((token) => {
+                res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' });
+                jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, userValue) => {
+                    if (err) res.status(401).json({ error: err });
 
-        res.status(200).json({
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-        });
+                    return res.status(200).json(userValue);
+                });
+            }).catch((err) => res.status(401).json({ error: err }))
+        }).catch((err) => res.status(401).json({ error: err }))
+
+
     } catch (err) {
-        console.log(err);
         res.status(500).json({ error: err });
         if (!err.statusCode) {
             err.statusCode = 500;

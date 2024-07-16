@@ -7,37 +7,45 @@ import { Observable } from 'rxjs';
 })
 export class IncomeService {
   private baseUrl = 'http://localhost:3000/incomeLogs';
-  private token = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getIncome(uid: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/get/${uid}`);
+  getIncome(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/get`,
+      { withCredentials: true }
+    );
   }
 
-  addIncome(uid: string, incomeDate: Date, incomeAmt: number, incomeSrc: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/add/${uid}`, {
+  addIncome(incomeDate: Date, incomeAmt: number, incomeSrc: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/add/`, {
       incomeDate: incomeDate,
       incomeAmt: incomeAmt,
       incomeSrc: incomeSrc,
-    });
+    },
+      { withCredentials: true }
+    );
   }
 
   deleteIncome(incomeID: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${incomeID}`);
+    return this.http.delete(`${this.baseUrl}/${incomeID}`,
+      { withCredentials: true }
+    );
   }
 
   editIncome(incomeID: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/edit/${incomeID}`);
+    return this.http.get(`${this.baseUrl}/edit/${incomeID}`,
+      { withCredentials: true }
+    );
   }
 
-  saveIncome(uid: string, incomeDate: Date, incomeAmt: number, incomeSrc: string, incomeID: string): Observable<any> {
+  saveIncome(incomeDate: Date, incomeAmt: number, incomeSrc: string, incomeID: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/`, {
-      uid: uid,
       incomeDate: incomeDate,
       incomeAmt: incomeAmt,
       incomeSrc: incomeSrc,
       incomeID: incomeID,
-    });
+    },
+      { withCredentials: true }
+    );
   }
 }

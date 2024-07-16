@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-nav-bar',
@@ -18,13 +17,10 @@ export class NavBarComponent {
   isAdmin: boolean = false;
 
   ngOnInit() {
-    const accessToken = this.authService.getAccessToken();
-    if (!accessToken) {
-      return;
-    }
-    const decoded: any = jwtDecode(accessToken);
-    this.isAdmin = decoded.isAdmin;
-    console.log(this.isAdmin);
+    this.authService.compareRole(true).subscribe((isAdmin) => {
+      this.isAdmin = isAdmin;
+      console.log(this.isAdmin);
+    });
   }
 
   // User Pages
@@ -52,7 +48,8 @@ export class NavBarComponent {
   }
 
   logout() {
-    this.authService.signout();
-    this.router.navigateByUrl('/');
+    this.authService.signout().subscribe(() => {
+      this.router.navigateByUrl('/');
+    });
   }
 }

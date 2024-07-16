@@ -11,11 +11,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class IncomeLogComponent {
   constructor(
-    private authService: AuthService,
     private incomeService: IncomeService,
     private fb: FormBuilder,
   ) {}
-  uid: string = '';
   incomeList: any;
   categoryList: any;
   editID: string = '';
@@ -39,11 +37,6 @@ export class IncomeLogComponent {
   });
 
   ngOnInit() {
-    const accessToken = this.authService.getAccessToken();
-    const decoded: any = jwtDecode(accessToken!);
-    console.log(decoded);
-    this.uid = decoded.userId;
-
     this.viewIncome();
   }
 
@@ -60,7 +53,7 @@ export class IncomeLogComponent {
   }
 
   viewIncome() {
-    this.incomeService.getIncome(this.uid).subscribe((res) => {
+    this.incomeService.getIncome().subscribe((res) => {
       console.log(res);
       if (res.incomeList.length > 0) {
         this.incomeList = res.incomeList;
@@ -75,7 +68,6 @@ export class IncomeLogComponent {
       console.log(this.addForm.value);
       this.incomeService
         .addIncome(
-          this.uid,
           this.addForm.get(['addDate'])!.value,
           this.addForm.get(['addAmt'])!.value,
           this.addForm.get(['addSrc'])!.value,
@@ -83,6 +75,7 @@ export class IncomeLogComponent {
         .subscribe(() => {
           this.toggleModal(1, false);
           this.addForm.reset();
+          this.submitted = false;
           this.viewIncome();
         });
     }
@@ -113,7 +106,6 @@ export class IncomeLogComponent {
     if (this.editForm.valid) {
       this.incomeService
         .saveIncome(
-          this.uid,
           this.editForm.get(['editDate'])!.value,
           this.editForm.get(['editAmt'])!.value,
           this.editForm.get(['editSrc'])!.value,
@@ -122,6 +114,7 @@ export class IncomeLogComponent {
         .subscribe(() => {
           this.toggleModal(2, false);
           this.editForm.reset();
+          this.submitted = false;
           this.viewIncome();
         });
     }
