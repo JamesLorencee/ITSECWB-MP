@@ -16,3 +16,9 @@ exports.convert = async (req, res) => {
         res.status(503).json({ error: err });
     })
 }
+
+exports.test = async (req, res) => {
+    const result = await fetch("https://v6.exchangerate-api.com/v6/3c138da5d5d7967aa7bd296d/latest/ASX")
+    const value = await result.json();
+    res.status(result.status).json(value);
+}
