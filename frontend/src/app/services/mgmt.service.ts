@@ -24,10 +24,10 @@ export class MgmtService {
   }
 
   saveEdit(userId: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/role/${userId}`, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}/role/${userId}`, {}, { withCredentials: true });
   }
 
   saveDeact(userId: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/active/${userId}`, { withCredentials: true });
+    return this.http.post(`${this.baseUrl}/active/${userId}`, {}, { withCredentials: true });
   }
 }
