@@ -83,10 +83,14 @@ export class AdminHomeComponent {
   }
 
   saveEdit(uid: any) {
-    this.mgmtService.saveEdit(uid).subscribe(() => {
-      this.toggleModal(0, false);
-      this.editForm.reset();
-      this.viewUsers();
+    this.authService.compareRole(true).subscribe((role) => {
+      if (role) {
+        this.mgmtService.saveEdit(uid).subscribe(() => {
+          this.toggleModal(0, false);
+          this.editForm.reset();
+          this.viewUsers();
+        });
+      }
     });
   }
 
@@ -109,10 +113,14 @@ export class AdminHomeComponent {
   }
 
   saveDeact(uid: any) {
-    this.mgmtService.saveDeact(uid).subscribe(() => {
-      this.toggleModal(0, false);
-      this.deactForm.reset();
-      this.viewUsers();
+    this.authService.compareRole(true).subscribe((role) => {
+      if (role) {
+        this.mgmtService.saveDeact(uid).subscribe(() => {
+          this.toggleModal(0, false);
+          this.deactForm.reset();
+          this.viewUsers();
+        });
+      }
     });
   }
 }
