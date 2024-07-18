@@ -39,15 +39,28 @@ export class AdminHomeComponent {
   deactHeader: string = '';
   deactIcon: string = '';
 
+  filterVal: any;
+
   ngOnInit() {
     this.viewUsers();
   }
 
   viewUsers() {
     this.mgmtService.getUsers().subscribe((res) => {
-      console.log(res);
       this.userList = res.userList;
     });
+  }
+
+  changeList(role: string) {
+    this.filterVal = role;
+
+    if (this.filterVal !== '') {
+      this.mgmtService.getUsersByRole(this.filterVal).subscribe((res) => {
+        this.userList = res.userList;
+      });
+    } else {
+      this.viewUsers();
+    }
   }
 
   toggleModal(idNum: number, isModalOpen?: boolean, uid?: any) {

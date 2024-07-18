@@ -14,6 +14,20 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+exports.getUsersByRole = async (req, res) => {
+  try {
+    const uid = req.user.userId;
+    const role = req.params.role;
+    const userList = await User.getUsersByRole(uid, role);
+    res.json({ userList: userList });
+  } catch (err) {
+    res.status(500).json({ message: "GET Users Error", err: err });
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+  }
+};
+
 exports.getUserByID = async (req, res) => {
   try {
     const uid = req.params.userId;

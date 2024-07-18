@@ -15,6 +15,10 @@ export class MgmtService {
     return this.http.get(`${this.baseUrl}/`, { withCredentials: true });
   }
 
+  getUsersByRole(role: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/filter/${role}`, { withCredentials: true });
+  }
+
   getLogs(): Observable<any> {
     return this.http.get(`${this.baseUrl}/logs`, { withCredentials: true });
   }

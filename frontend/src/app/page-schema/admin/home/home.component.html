@@ -2,11 +2,14 @@
   <div class="flex w-full justify-between">
     <h1 class="text-2xl font-semibold tex-text">User Management</h1>
     <select
+      #filter
       class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+      (change)="changeList(filter.value)"
     >
       <option value="" disabled selected>Filter by role</option>
-      <option value="1">User</option>
-      <option value="2">Admin</option>
+      <option value="">Any</option>
+      <option value="0">User</option>
+      <option value="1">Admin</option>
     </select>
   </div>
   <hr class="h-[1px] w-full bg-neutral-100" />

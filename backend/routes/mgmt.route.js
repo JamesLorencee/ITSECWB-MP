@@ -5,6 +5,7 @@ const mgmtController = require("../controllers/mgmt.controller");
 const { authenticateJWT } = require("../middleware/jwt");
 
 router.get("/", authenticateJWT, mgmtController.getUsers);
+router.get("/filter/:role", authenticateJWT, mgmtController.getUsersByRole);
 router.get("/logs", authenticateJWT, mgmtController.getLogs);
 router.get("/edit/:userId", authenticateJWT, mgmtController.getUserByID);
 router.post("/role/:userId", authenticateJWT, mgmtController.setRole);

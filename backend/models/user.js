@@ -168,6 +168,21 @@ module.exports = class User {
     });
   }
 
+  static async getUsersByRole(uid, role) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        `SELECT * FROM users
+        WHERE isAdmin = ?
+        AND id NOT LIKE ?;`,
+        [role, uid],
+        (err, rows) => {
+          if (err) reject(err);
+          else resolve(rows);
+        }
+      );
+    });
+  }
+
   static async getLogs() {
     return new Promise((resolve, reject) => {
       db.execute(
