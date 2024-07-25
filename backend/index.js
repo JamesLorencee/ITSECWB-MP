@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
 const xss = require("xss-clean");
+const https = require("https");
+const fs = require("fs");
 
 const authRoutes = require("./routes/auth.route");
 const incomeRoutes = require("./routes/income.route");
@@ -29,7 +31,7 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+  res.setHeader("Access-Control-Allow-Origin", "https://localhost:4200");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
@@ -42,10 +44,24 @@ app.use("/expenseLogs", expenseRoutes);
 app.use("/mgmt", mgmtRoutes);
 
 app.use(errorController.get404);
-
 app.use(errorController.get500);
 
-app.listen(ports, () => console.log(`Listening on port ${ports}`));
+const options = {
+  key: fs.readFileSync("server.key"),
+  cert: fs.readFileSync("server.cert"),
+};
+
+// Creating https server by passing
+// options and app object
+https.createServer(options, app).listen(ports, function (err) {
+  if (err) {
+    console.error("Failed to start HTTPS server:", err);
+  } else {
+    console.log(`HTTPS server started at port ${ports}`);
+  }
+});
+
+// app.listen(ports, () => console.log(`Listening on port ${ports}`));
 
 module.exports = {
   port: process.env.PORT || 3000,

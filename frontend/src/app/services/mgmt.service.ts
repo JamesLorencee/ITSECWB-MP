@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class MgmtService {
-  private baseUrl = 'http://localhost:3000/mgmt';
+  private baseUrl = 'https://localhost:3000/mgmt';
   private token = '';
 
   constructor(private http: HttpClient) {}
