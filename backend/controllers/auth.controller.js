@@ -107,6 +107,7 @@ exports.signin = async (req, res) => {
 
     const refreshToken = generateRefreshToken(userAccess);
 
+    User.setLastLogin(userAccess.userId);
     User.updateRefreshToken(refreshToken, userAccess.userId)
       .then(() => {
         generateAccessToken(userAccess)

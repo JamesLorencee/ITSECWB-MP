@@ -158,7 +158,8 @@ module.exports = class User {
     return new Promise((resolve, reject) => {
       db.execute(
         `SELECT * FROM users
-                WHERE id NOT LIKE ?;`,
+        WHERE id NOT LIKE ?
+        ORDER BY lastLogin DESC;`,
         [uid],
         (err, rows) => {
           if (err) reject(err);
@@ -173,7 +174,8 @@ module.exports = class User {
       db.execute(
         `SELECT * FROM users
         WHERE isAdmin = ?
-        AND id NOT LIKE ?;`,
+        AND id NOT LIKE ?
+        ORDER BY lastLogin DESC;`,
         [role, uid],
         (err, rows) => {
           if (err) reject(err);
@@ -216,6 +218,21 @@ module.exports = class User {
       db.execute(
         `UPDATE users 
         SET isActive = 1 - isActive
+        WHERE (id = ?);`,
+        [uid],
+        (err) => {
+          if (err) reject(err);
+          else resolve(null);
+        }
+      );
+    });
+  }
+
+  static async setLastLogin(uid) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        `UPDATE users 
+        SET lastLogin = NOW()
         WHERE (id = ?);`,
         [uid],
         (err) => {
