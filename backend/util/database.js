@@ -1,22 +1,32 @@
 require("dotenv").config();
+const mysql = require("mysql2/promise");
 
-const mysql = require("mysql2");
-
-// DB Credentials in .env
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
-    database: "itsecwb-mp",
-});
-
-db.connect(function(error) {
-    if (error) {
-        console.log(error);
-    } else {
-        console.log("Successfully connected to DB as ID " + db.threadId);
+// Create a function to get a new database connection
+async function getConnection() {
+    try {
+        const connection = await mysql.createConnection({
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            port: process.env.DB_PORT,
+            database: "itsecwb-mp",
+        });
+        return connection;
+    } catch (error) {
+        throw error;
     }
-});
+}
 
-module.exports = db;
+// Function to close the connection
+async function closeConnection(connection) {
+    try {
+        await connection.end();
+    } catch (error) {
+        console.error("Error closing the connection:", error);
+    }
+}
+
+module.exports = {
+    getConnection,
+    closeConnection,
+};
