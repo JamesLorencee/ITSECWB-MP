@@ -9,39 +9,32 @@ import { env } from './environment/environment';
 export class AuthService {
   private baseUrl = `${env.baseUrl}auth`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   //done
   signin(email: string, password: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/signin`,
-      { email, password },
-      { withCredentials: true }
-    );
+    return this.http.post(`${this.baseUrl}/signin`, { email, password }, { withCredentials: true });
   }
 
   //done
   signout(): Observable<any> {
-    return this.http.delete<any>(`${this.baseUrl}/logout`,
-      { withCredentials: true }
-    )
+    return this.http.delete<any>(`${this.baseUrl}/logout`, { withCredentials: true });
   }
 
   compareRole(role: boolean): Observable<boolean> {
-    return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`,
-      { withCredentials: true }
-    ).pipe(
+    return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`, { withCredentials: true }).pipe(
       catchError((error) => {
         return of(false);
       }),
-      (value) => { return value },
+      (value) => {
+        return value;
+      },
     );
   }
 
   //done
   isLoggedIn(): Observable<boolean> {
-    return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`,
-      { withCredentials: true }
-    ).pipe(
+    return this.http.get<boolean>(`${this.baseUrl}/is-logged-in`, { withCredentials: true }).pipe(
       catchError((error) => {
         return of(false);
       }),
@@ -62,4 +55,3 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/signup`, formData);
   }
 }
-

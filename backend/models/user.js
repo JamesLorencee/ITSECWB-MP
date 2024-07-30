@@ -96,6 +96,26 @@ module.exports = class User {
     });
   }
 
+  static findByID(id) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        "SELECT id, name, email, isAdmin, isActive FROM users WHERE id LIKE ?",
+        [id],
+        (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            if (rows.length > 0) {
+              resolve(rows[0]);
+            } else {
+              resolve(null);
+            }
+          }
+        }
+      );
+    });
+  }
+
   static async getUUID() {
     return new Promise((resolve, reject) => {
       db.execute(`SELECT UUID() AS uuid`, [], (err, rows) => {
@@ -148,6 +168,21 @@ module.exports = class User {
     });
   }
 
+  static async getUsersByRole(uid, role) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        `SELECT * FROM users
+        WHERE isAdmin = ?
+        AND id NOT LIKE ?;`,
+        [role, uid],
+        (err, rows) => {
+          if (err) reject(err);
+          else resolve(rows);
+        }
+      );
+    });
+  }
+
   static async getLogs() {
     return new Promise((resolve, reject) => {
       db.execute(
@@ -156,6 +191,36 @@ module.exports = class User {
         (err, rows) => {
           if (err) reject(err);
           else resolve(rows);
+        }
+      );
+    });
+  }
+
+  static async setRole(uid) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        `UPDATE users 
+        SET isAdmin = 1 - isAdmin
+        WHERE (id = ?);`,
+        [uid],
+        (err) => {
+          if (err) reject(err);
+          else resolve(null);
+        }
+      );
+    });
+  }
+
+  static async setActive(uid) {
+    return new Promise((resolve, reject) => {
+      db.execute(
+        `UPDATE users 
+        SET isActive = 1 - isActive
+        WHERE (id = ?);`,
+        [uid],
+        (err) => {
+          if (err) reject(err);
+          else resolve(null);
         }
       );
     });

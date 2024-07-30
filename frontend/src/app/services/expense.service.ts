@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ExpenseService {
-  private baseUrl = 'http://localhost:3000/expenseLogs';
+  private baseUrl = 'https://localhost:3000/expenseLogs';
   private token = '';
 
   constructor(private http: HttpClient) {}
