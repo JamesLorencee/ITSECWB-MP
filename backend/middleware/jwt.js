@@ -32,10 +32,33 @@ exports.addToBlacklist = (tokenId) => {
 exports.authenticateJWT = (req, res, next) => {
     const token = req.cookies["authorization"];
 
-    if (!token) {
-        return res.status(401).json({ error: "invalid_token" });
-    }
+    if (!token) return res.status(401).json({ error: "Token not found." });
 
+    try {
+        BlackListDB.checkIfBlacklisted(token);
+
+        //if not blacklisted verify jwt
+        jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
+            if (err) {
+                if (err.name === "TokenExpiredError") {
+                    this.generateAccessToken(user)
+                        .then((token) => {
+                            res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
+                            return next();
+                        })
+                        .catch((err) => {
+                            return res.status(401).json({ error: err });
+                        });
+                }
+                return res.status(401).json({ error: "invalid_token" });
+            }
+            req.user = user;
+            res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
+            return next();
+        });
+    } catch (err) {
+    } finally {
+    }
     BlackListDB.checkIfBlacklisted(token)
         .then(() => {
             //if not blacklisted verify jwt
@@ -76,6 +99,30 @@ exports.generateRefreshToken = (user) => {
 
 // Can only  generate access token if refresh token is valid
 exports.generateAccessToken = (user) => {
+    try {
+        const token = User.getRefreshToken(user.userId)
+        const refreshToken = this.generateRefreshToken(user);
+
+        bcrypt.compare(refreshToken, token, (err) => {
+            if (err) throw err;
+            if (result) {
+                jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err) => {
+                    if (err) throw err;
+
+                    // Generate the access token
+                    const accessToken = jwt.sign(
+                        user,
+                        process.env.JWT_ACCESS_SECRET,
+                        { expiresIn: "15m" } // 15 minutes
+                    );
+                    return accessToken;
+                });
+            }
+            throw new Error("invalid_token");
+        })
+    } catch (err) {
+        throw err;
+    }
     return new Promise((resolve, reject) => {
         // Fetch the refresh token
         User.getRefreshToken(user.userId)
