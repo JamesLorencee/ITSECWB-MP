@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const HttpError = require("../util/error");
 require("dotenv").config;
 const BlackListDB = require("../models/jwt.model");
 const User = require("../models/user");
@@ -7,26 +8,41 @@ const User = require("../models/user");
 
 // Function to add token to blacklist
 exports.addToBlacklist = (tokenId) => {
-    return new Promise((resolve, reject) => {
+    try {
         jwt.verify(
             tokenId,
             process.env.JWT_ACCESS_SECRET,
             { ignoreExpiration: true },
             (err, userInfo) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
+                if (err) throw new HttpError(400, "Invalid Token", err);
+
                 BlackListDB.blackListJWT(tokenId, userInfo.exp)
-                    .then(() => {
-                        resolve(userInfo.userId);
-                    })
-                    .catch((error) => {
-                        reject(error);
-                    });
+                return userInfo.userId
             }
         );
-    });
+    } catch (error) {
+        throw error;
+    }
+    //  return new Promise((resolve, reject) => {
+    //      jwt.verify(
+    //          tokenId,
+    //          process.env.JWT_ACCESS_SECRET,
+    //          { ignoreExpiration: true },
+    //          (err, userInfo) => {
+    //              if (err) {
+    //                  reject(err);
+    //                  return;
+    //              }
+    //              BlackListDB.blackListJWT(tokenId, userInfo.exp)
+    //                  .then(() => {
+    //                      resolve(userInfo.userId);
+    //                  })
+    //                  .catch((error) => {
+    //                      reject(error);
+    //                  });
+    //          }
+    //      );
+    //  });
 };
 
 exports.authenticateJWT = (req, res, next) => {
@@ -39,52 +55,54 @@ exports.authenticateJWT = (req, res, next) => {
 
         //if not blacklisted verify jwt
         jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
-            if (err) {
-                if (err.name === "TokenExpiredError") {
-                    this.generateAccessToken(user)
-                        .then((token) => {
-                            res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
-                            return next();
-                        })
-                        .catch((err) => {
-                            return res.status(401).json({ error: err });
-                        });
-                }
-                return res.status(401).json({ error: "invalid_token" });
-            }
-            req.user = user;
-            res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
-            return next();
-        });
-    } catch (err) {
-    } finally {
-    }
-    BlackListDB.checkIfBlacklisted(token)
-        .then(() => {
-            //if not blacklisted verify jwt
-            jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
+            if (!err) {
                 req.user = user;
-                if (err) {
-                    if (err.name === "TokenExpiredError") {
-                        this.generateAccessToken(user)
-                            .then((token) => {
-                                res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
-                                return next();
-                            })
-                            .catch((err) => {
-                                return res.status(401).json({ error: err });
-                            });
-                    }
-                    return res.status(401).json({ error: "invalid_token" });
-                }
                 res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
                 return next();
-            });
-        })
-        .catch(() => {
-            //if blacklisted
-            return res.status(401).json({ error: "invalid_token" });
+            }
+            if (err.name !== "TokenExpiredError") throw new HttpError(401, "Invalid Token", err);
+
+            this.generateAccessToken(user)
+                .then((token) => {
+                    res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
+                    return next();
+                })
+                .catch((err) => {
+                    return res.status(401).json({ error: err });
+                });
         });
+    } catch (err) {
+        if (err instanceof HttpError) {
+            res.status(err.statusCode).json({ error: err.message });
+        }
+
+    }
+    //  BlackListDB.checkIfBlacklisted(token)
+    //      .then(() => {
+    //          //if not blacklisted verify jwt
+    //          jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, user) => {
+    //              req.user = user;
+    //              if (err) {
+    //                  if (err.name === "TokenExpiredError") {
+    //                      this.generateAccessToken(user)
+    //                          .then((token) => {
+    //                              res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
+    //                              return next();
+    //                          })
+    //                          .catch((err) => {
+    //                              return res.status(401).json({ error: err });
+    //                          });
+    //                  }
+    //                  return res.status(401).json({ error: "invalid_token" });
+    //              }
+    //              res.cookie("authorization", token, { httpOnly: true, secure: true, sameSite: 'None' })
+    //              return next();
+    //          });
+    //      })
+    //      .catch(() => {
+    //          //if blacklisted
+    //          return res.status(401).json({ error: "invalid_token" });
+    //      });
 };
 
 exports.generateRefreshToken = (user) => {

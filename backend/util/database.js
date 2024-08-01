@@ -22,7 +22,7 @@ async function closeConnection(connection) {
     try {
         await connection.end();
     } catch (error) {
-        console.error("Error closing the connection:", error);
+        throw error;
     }
 }
 

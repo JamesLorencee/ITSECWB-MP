@@ -1,11 +1,12 @@
 // const db = require("../util/database");
 const { getConnection, closeConnection } = require("../util/database");
 const jwt = require("jsonwebtoken");
+const HttpError = require("../util/error");
 require("dotenv").config();
 
 exports.validateRefreshToken = (refreshToken) => {
     jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
-        if (err) throw new Error("Invalid Token");
+        if (err) throw new HttpError(400, "Invalid Token", "Token Invalid");
         return true;
     });
 }
@@ -17,8 +18,8 @@ exports.checkIfBlacklisted = (token) => {
             "SELECT * FROM `jwt_blacklist` WHERE `jwt_token` = ? AND expiration_time > NOW()",
             [token],
             (err, rows) => {
-                if (err) throw err
-                if (rows.length > 0) throw new Error("Invalid Token")
+                if (err) throw new HttpError(500, "Internal Server Error", err);
+                if (rows.length > 0) throw new HttpError(401, "Unauthorized", "Blacklisted Token")
                 return null;
             }
         )
@@ -52,9 +53,8 @@ exports.blackListJWT = (token, time) => {
         connection.execute(
             "INSERT INTO `jwt_blacklist` VALUES (?, FROM_UNIXTIME(?))",
             [token, time],
-            (err, rows) => {
-                if (err) throw err;
-                if (rows.length > 0) return rows[0];
+            (err) => {
+                if (err) throw new HttpError(500, "Internal Server Error", err);
                 else return null;
             }
         )
