@@ -39,4 +39,36 @@ module.exports = class User {
             closeConnection(connection);
         }
     }
+
+    static async save(user) {
+        const connection = awaiat getConnection();
+        try {
+            const query = `INSERT INTO users (
+                  id
+                  , name
+                  , email
+                  , password
+                  , phoneNumber
+                  , photoFileName
+              ) VALUES (?, ? ,?, ?, ?, ?)`,
+            const params = [
+                user.uuid,
+                user.name,
+                user.email,
+                user.password,
+                user.phoneNumber,
+                user.photoFileName,
+            ];
+
+            const [rows, fields] = await connection.execute(
+                query,
+                params
+            )
+            return (user.uuid);
+        } catch (error) {
+            throw error;
+        } finally {
+            closeConnection(connection)
+        }
+    }
 }

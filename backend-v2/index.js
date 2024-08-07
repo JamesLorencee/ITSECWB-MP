@@ -10,6 +10,7 @@ const cors = require("cors");
 const fs = require("fs");
 
 const authRoutes = require("./routes/auth.routes");
+const userRoutes = require("./routes/user.routes");
 const app = express();
 const ports = process.env.PORT || 3000;
 
@@ -34,6 +35,7 @@ const options = {
     cert: fs.readFileSync("server.cert")
 }
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 // Creating https server by passing
 // options and app object
 https.createServer(options, app).listen(ports, function(err) {
