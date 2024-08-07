@@ -30,3 +30,8 @@ exports.setRefreshCookies = (res, token) => {
 exports.setAccessCookies = (res, token) => {
     res.cookie('aid', token, { maxAge: 5 * 60 * 1000, httpOnly: true, secure: true });
 }
+
+exports.clearJWTCookies = res => {
+    res.clearCookie("aid");
+    res.clearCookie("rid");
+}

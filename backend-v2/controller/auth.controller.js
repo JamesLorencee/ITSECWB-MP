@@ -1,10 +1,16 @@
-const { validationResult } = require("express-validator");
 const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
-
+const { validationResult } = require("express-validator");
 const { generateAccessToken, generateRefreshToken, setAccessCookies, setRefreshCookies } = require("../models/jwt");
+
+exports.authenticateRoles = (req, res) => {
+    const role = req.params.isAdmin;
+    if (req.user.isAdmin ? "true" : "false" == role)
+        return res.status(200).send(true);
+    return res.status(200).send(false);
+};
 
 exports.signup = async (req, res) => {
     const name = req.body.name;

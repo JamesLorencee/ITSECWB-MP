@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { verify } = require("jsonwebtoken");
-const { generateAccessToken, generateRefreshToken, setAccessCookies, setRefreshCookies } = require("../models/jwt");
+const { clearJWTCookies, generateAccessToken, generateRefreshToken, setAccessCookies, setRefreshCookies } = require("../models/jwt");
 const User = require("../models/user");
 
 exports.authenticateJWT = (req, res, next) => {
@@ -8,8 +8,7 @@ exports.authenticateJWT = (req, res, next) => {
     const refresh = req.cookies['rid']
 
     if (!access || !refresh) {
-        setAccessCookies(res, "");
-        setRefreshCookies(res, "");
+        clearJWTCookies(res);
         return res.status(401).json({ ok: false, message: "Invalid Authentication" });
     }
     try {
@@ -49,11 +48,8 @@ exports.authenticateJWT = (req, res, next) => {
 
         req.user = accessPayload;
     } catch (err) {
-        if (err.name === 'TokenExpiredError') {
-            setAccessCookies(res, "");
-            setRefreshCookies(res, "");
-        }
-        return res.status(401).json({ ok: false, error: "Invalid Authentication" });
+        clearJWTCookies(res);
+        return res.status(401).json({ ok: false, error: "Invalid Authentication Please Log-in" });
     }
     return next();
 }

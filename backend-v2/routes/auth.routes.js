@@ -7,10 +7,7 @@ const checkfile = require("../middleware/check-file");
 const uploadSignUp = require("../middleware/multer");
 const rateLimit = require("express-rate-limit");
 const { authenticateJWT } = require("../middleware/jwt");
-
-router.get("/is-logged-in", authenticateJWT, (req, res) => {
-    res.status(200).send(true);
-});
+const { clearJWTCookies } = require("../models/jwt");
 
 const rateLimiter = rateLimit({
     windowMs: 15 * 1000, // 15 seconds
@@ -21,6 +18,34 @@ const rateLimiter = rateLimit({
     },
 });
 
+/**
+* Checker for Role
+* @param isAdmin - true is admin, false otherwise
+*/
+router.get(
+    "/authenticate/:isAdmin",
+    authenticateJWT,
+    authController.authenticateRoles
+);
+
+/**
+* Checker for Login status
+*/
+router.get("/is-logged-in", authenticateJWT, (_req, res) => {
+    res.status(200).send(true);
+});
+
+/**
+* Logout user
+*/
+router.delete("/logout", authenticateJWT, (_req, res) => {
+    clearJWTCookies(res)
+    res.status(200).json({ ok: true, message: "Logged out Successfully!" })
+});
+
+/**
+* Sign up user
+*/
 router.post(
     "/signup",
     rateLimiter,
@@ -36,6 +61,9 @@ router.post(
     authController.signup
 );
 
+/**
+* Sign in user
+*/
 router.post(
     "/signin",
     rateLimiter,
@@ -48,4 +76,5 @@ router.post(
     ],
     authController.signin
 );
+
 module.exports = router
