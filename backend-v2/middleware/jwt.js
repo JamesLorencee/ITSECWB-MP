@@ -1,19 +1,59 @@
+require("dotenv").config();
 const { verify } = require("jsonwebtoken");
+const { generateAccessToken, generateRefreshToken, setAccessCookies, setRefreshCookies } = require("../models/jwt");
+const User = require("../models/user");
 
 exports.authenticateJWT = (req, res, next) => {
-    const authorization = req.headers['authorization']
+    const access = req.cookies['aid']
+    const refresh = req.cookies['rid']
 
-    if (!authorization) {
-        throw new Error("Not Authorized");
+    if (!access || !refresh) {
+        setAccessCookies(res, "");
+        setRefreshCookies(res, "");
+        return res.status(401).json({ ok: false, message: "Invalid Authentication" });
     }
-
     try {
-        const token = token.splt(" ")[1];
-        const payload = verify(token, process.env.JWT_ACCESS_SECRET);
-        req.user = payload;
+        const refreshPayload = verify(refresh, process.env.JWT_REFRESH_SECRET);
+
+        const payload = {
+            email: refreshPayload.email,
+            userId: refreshPayload.userId,
+            isAdmin: refreshPayload.isAdmin,
+        };
+
+        let accessPayload;
+        try {
+            accessPayload = verify(access, process.env.JWT_ACCESS_SECRET);
+        } catch (err) {
+            if (err.name === 'TokenExpiredError') {
+                // Access token is expired, generate a new access token and refresh token
+                const newAccessToken = generateAccessToken(payload);
+                const newRefreshToken = generateRefreshToken(payload);
+
+                // Update cookies with new tokens
+                User.storeRefreshToken(newRefreshToken, payload.userId)
+                setAccessCookies(res, newAccessToken);
+                setRefreshCookies(res, newRefreshToken);
+
+                // Set the new tokens in the request for further processing
+                req.cookies['aid'] = newAccessToken;
+                req.cookies['rid'] = newRefreshToken;
+
+                // Re-verify the new access token
+                accessPayload = verify(newAccessToken, process.env.JWT_ACCESS_SECRET);
+
+            } else { throw new Error("Invalid Access Token"); }
+        }
+
+        if (accessPayload.userId != refreshPayload.userId) throw new Error("Invalid JWT");
+
+        req.user = accessPayload;
     } catch (err) {
-        console.error(err);
-        throw new Error("Not Authenticated");
+        if (err.name === 'TokenExpiredError') {
+            setAccessCookies(res, "");
+            setRefreshCookies(res, "");
+        }
+        return res.status(401).json({ ok: false, error: "Invalid Authentication" });
     }
     return next();
 }
