@@ -173,6 +173,8 @@ CREATE TABLE `users` (
   `phoneNumber` varchar(11) NOT NULL,
   `photoFileName` varchar(100) NOT NULL,
   `isAdmin` tinyint(1) NOT NULL DEFAULT '0',
+  `isActive` tinyint(1) NOT NULL DEFAULT '1',
+  `lastLogin` datetime DEFAULT NULL,
   `refreshToken` char(60) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
