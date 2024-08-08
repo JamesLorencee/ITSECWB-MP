@@ -9,7 +9,6 @@ import { PageSchemaComponent } from './page-schema/page-schema.component';
 import { LoginGuard } from './guards/login-guard.guard';
 import { IncomeLogComponent } from './page-schema/user/income-log/income-log.component';
 import { UserLogsComponent } from './page-schema/admin/user-logs/user-logs.component';
-import { SystemSettingsComponent } from './page-schema/admin/system-settings/system-settings.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -31,12 +30,6 @@ export const routes: Routes = [
       {
         path: 'logs',
         component: UserLogsComponent,
-        canActivate: [RoleGuardService],
-        data: { isAdmin: true },
-      },
-      {
-        path: 'settings',
-        component: SystemSettingsComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: true },
       },

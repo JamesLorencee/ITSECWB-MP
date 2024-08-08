@@ -43,10 +43,6 @@ export class NavBarComponent {
     this.router.navigate(['../logs'], { relativeTo: this.activatedRoute });
   }
 
-  systemSettings() {
-    this.router.navigate(['../settings'], { relativeTo: this.activatedRoute });
-  }
-
   logout() {
     this.authService.signout().subscribe(() => {
       this.router.navigateByUrl('/');
