@@ -177,4 +177,135 @@ module.exports = class User {
             closeConnection(connection)
         }
     }
+
+    static async getUsers(uid) {
+        const connection = await getConnection();
+        try {
+            const query = `
+                SELECT 
+                    id
+                    , name
+                    , email
+                    , isAdmin
+                    , lastLogin
+                FROM users
+                WHERE id NOT LIKE ?
+                ORDER BY lastLogin DESC
+            `;
+
+            const params = [uid]
+            const [rows, _fields] = await connection.execute(query, params);
+            return rows;
+        } catch (error) {
+            throw error;
+        } finally {
+            closeConnection(connection)
+        }
+    }
+
+    static async getUsersByRole(uid, role) {
+        const connection = await getConnection();
+        try {
+            const query = `
+                SELECT 
+                    id
+                    , name
+                    , email
+                    , isAdmin
+                    , lastLogin
+                FROM users
+                WHERE 
+                    id NOT LIKE ?
+                    AND isAdmin = ?
+                ORDER BY lastLogin DESC
+            `;
+
+            const params = [uid, role]
+            const [rows, _fields] = await connection.execute(query, params);
+            return rows;
+        } catch (error) {
+            throw error;
+        } finally {
+            closeConnection(connection)
+        }
+    }
+
+    /** 
+        * Toggle role of user
+        *
+        * @returns audit logs
+        */
+    static async getLogs() {
+        const connection = await getConnection();
+        try {
+            const query = `
+                SELECT 
+                    a.*
+                    , u.isAdmin
+                    , u.email
+                    , DATE_FORMAT(a.timestamp,'%M %d, %Y %l:%i:%s') AS formatDate 
+                FROM audit_logs a
+                JOIN users u 
+                ON a.userID = u.id
+            `;
+
+            const params = []
+            const [rows, _fields] = await connection.execute(query, params);
+            return rows;
+        } catch (error) {
+            throw error;
+        } finally {
+            closeConnection(connection)
+        }
+    }
+
+
+    /** 
+        * Toggle role of user
+        *
+        * @params uid - the id of the user
+        */
+    static async setRole(uid) {
+        const connection = await getConnection();
+        try {
+            const query = `
+                UPDATE users 
+                SET isAdmin = 1 - isAdmin
+                WHERE (id = ?)
+            `;
+
+            const params = [uid]
+            await connection.execute(query, params);
+            return;
+        } catch (error) {
+            throw error;
+        } finally {
+            closeConnection(connection)
+        }
+    }
+
+    /** 
+        * Toggle isActive of user
+        *
+        * @params uid - the id of the user
+        */
+    static async setActive(uid) {
+        const connection = await getConnection();
+        try {
+            const query = `
+                UPDATE users 
+                SET isActive = 1 - isActive
+                WHERE (id = ?)
+            `;
+
+            const params = [uid]
+            await connection.execute(query, params);
+            return;
+        } catch (error) {
+            throw error;
+        } finally {
+            closeConnection(connection)
+        }
+    }
+
 }

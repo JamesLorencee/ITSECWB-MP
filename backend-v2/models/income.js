@@ -1,14 +1,13 @@
 const { getConnection, closeConnection } = require("../util/database");
 
-module.exports = class Expense {
-    constructor(uid, expenseDate, expenseItem, expenseAmt, expenseSrc, expenseID = null) {
+module.exports = class Income {
+    constructor(uid, incomeDate, incomeAmt, incomeSrc, incomeID = null) {
         this.uid = uid;
-        this.expenseDate = expenseDate;
-        this.expenseItem = expenseItem;
-        this.expenseAmt = expenseAmt;
-        this.expenseSrc = expenseSrc;
-        if (expenseID !== null) {
-            this.expenseID = expenseID;
+        this.incomeDate = incomeDate;
+        this.incomeAmt = incomeAmt;
+        this.incomeSrc = incomeSrc;
+        if (incomeID !== null) {
+            this.incomeID = incomeID;
         }
     }
 
@@ -17,11 +16,11 @@ module.exports = class Expense {
         try {
             const query = `
                 SELECT 
-                    e.* 
-                    , c.categoryName AS categoryExpense
-                    , DATE_FORMAT(e.expenseDate, '%m/%d/%y') AS formatDate 
-                FROM expenselogs e
-                JOIN categorylist c ON e.expenseSource = c.categoryID
+                    i.*
+                    , c.categoryName AS categoryIncome
+                    , DATE_FORMAT(i.incomeDate, '%m/%d/%y') AS formatDate 
+                FROM incomelogs i 
+                JOIN categorylist c ON i.incomeSource = c.categoryID
                 WHERE userID = ?`;
             const params = [userId];
 
@@ -37,25 +36,23 @@ module.exports = class Expense {
         }
     }
 
-    static async add(expense) {
+    static async add(income) {
         const connection = await getConnection()
         try {
             const query = `
-                INSERT INTO expenselogs (
+                INSERT INTO incomelogs (
                     userID
-                    , expenseDate
-                    , expenseItem
-                    , expenseAmt
-                    , expenseSource
+                    , incomeDate
+                    , incomeAmt
+                    , incomeSource
                 ) VALUES (
                     ?
-                    , CONVERT_TZ(STR_TO_DATE(REPLACE(?, 'Z', ''), '%Y-%m-%dT%H:%i:%s.%f'), '+00:00', '+08:00')
-                    , ?
+                    , CONVERT_TZ(STR_TO_DATE(REPLACE(?, 'Z', ''), '%Y-%m-%dT%H:%i:%s.%f'), '+00:00', '+08:00') 
                     , ?
                     , ?
                 )
             `;
-            const params = [expense.uid, expense.expenseDate, expense.expenseItem, expense.expenseAmt, expense.expenseSrc];
+            const params = [income.uid, income.incomeDate, income.incomeAmt, income.incomeSrc];
 
             await connection.execute(
                 query,
@@ -69,14 +66,35 @@ module.exports = class Expense {
         }
     }
 
-    static async edit(expenseID) {
+    static async delete(incomeID) {
+        const connection = await getConnection()
+        try {
+            const query = `
+                    DELETE FROM incomelogs
+                    WHERE incomeID = ?
+                `;
+            const params = [incomeID];
+
+            await connection.execute(
+                query,
+                params
+            )
+            return;
+        } catch (error) {
+            throw error;
+        } finally {
+            closeConnection(connection);
+        }
+    }
+
+    static async edit(incomeID) {
         const connection = await getConnection()
         try {
             const query = `
                 SELECT * 
-                FROM expenselogs
-                WHERE expenseID = ?`;
-            const params = [expenseID];
+                FROM incomelogs
+                WHERE incomeId = ?`;
+            const params = [incomeID];
 
             const [rows, _fields] = await connection.execute(
                 query,
@@ -90,47 +108,25 @@ module.exports = class Expense {
         }
     }
 
-    static async save(expense) {
+    static async save(income) {
         const connection = await getConnection()
         try {
             const query = `
-                UPDATE expenselogs SET 
-                    expenseDate = CONVERT_TZ(STR_TO_DATE(REPLACE(?, 'Z', ''), '%Y-%m-%dT%H:%i:%s.%f'), '+00:00', '+08:00') ,
-                    expenseItem = ?,  
-                    expenseAmt = ?, 
-                    expenseSource = ?
-                WHERE expenseID = ?
+                UPDATE incomelogs 
+                SET 
+                    incomeDate = CONVERT_TZ(STR_TO_DATE(REPLACE(?, 'Z', ''), '%Y-%m-%dT%H:%i:%s.%f'), '+00:00', '+08:00') , 
+                    incomeAmt = ?, 
+                    incomeSource = ?
+                WHERE incomeID = ?
                 AND userID = ?
                 `;
             const params = [
-                expense.expenseDate,
-                expense.expenseItem,
-                expense.expenseAmt,
-                expense.expenseSrc,
-                expense.expenseID,
-                expense.uid,
+                income.incomeDate,
+                income.incomeAmt,
+                income.incomeSrc,
+                income.incomeID,
+                income.uid,
             ];
-
-            await connection.execute(
-                query,
-                params
-            )
-            return;
-        } catch (error) {
-            throw error;
-        } finally {
-            closeConnection(connection);
-        }
-    }
-
-    static async delete(expenseID) {
-        const connection = await getConnection()
-        try {
-            const query = `
-                    DELETE FROM expenselogs
-                    WHERE expenseID = ?
-                `;
-            const params = [expenseID];
 
             await connection.execute(
                 query,
@@ -152,7 +148,7 @@ module.exports = class Expense {
                         categoryID
                         , categoryName 
                     FROM categorylist 
-                    WHERE categorytype = 'expense'
+                    WHERE categorytype = 'income'
                 `;
 
             const [rows, _fields] = await connection.execute(
@@ -167,4 +163,3 @@ module.exports = class Expense {
         }
     }
 };
-
