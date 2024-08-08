@@ -127,6 +127,29 @@ module.exports = class User {
   }
 
   /**
+   * Find user by id
+   *
+   * @param id - the user id
+   * @returns the user information
+   */
+  static async findByID(id) {
+    const connection = await getConnection();
+    try {
+      const query = `SELECT id, name, email, isAdmin, isActive FROM users WHERE id LIKE ?`;
+      const params = [id];
+
+      const [rows, _fields] = await connection.execute(query, params);
+
+      if (rows.length <= 0) return null;
+      return rows[0];
+    } catch (error) {
+      throw error;
+    } finally {
+      closeConnection(connection);
+    }
+  }
+
+  /**
    * Updates the last login
    *
    * @param uid - the user id
