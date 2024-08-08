@@ -4,14 +4,14 @@ exports.get = async (req, res) => {
     const uid = req.user.userId;
 
     try {
-        const expenseList = await Expense.get(uid);
-        const categoryList = await Expense.getCategories();
-        res.json({ expenseList: expenseList, categoryList: categoryList });
+        const [expenseList, categoryList] = await Promise.all(
+            [
+                Expense.get(uid),
+                Expense.getCategories()
+            ]);
+        res.status(200).json({ ok: true, expenseList: expenseList, categoryList: categoryList });
     } catch (err) {
-        res.status(500).json({ message: "GET Expense Error", err: err });
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
+        res.status(500).json({ ok: false, error: "GET Expense Error" });
     }
 };
 
@@ -32,12 +32,9 @@ exports.add = async (req, res) => {
         };
 
         const add = await Expense.add(expense);
-        res.json({ res: add });
+        res.status(200).json({ ok: true, res: add });
     } catch (err) {
-        res.status(500).json({ message: "Add Expense Error", err: err });
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
+        res.status(500).json({ ok: false, error: "Add Expense Error" });
     }
 };
 
@@ -46,12 +43,9 @@ exports.edit = async (req, res) => {
 
     try {
         const editExpense = await Expense.edit(id);
-        res.json({ editExpense: editExpense });
+        res.status(200).json({ ok: true, editExpense: editExpense });
     } catch (err) {
-        res.status(500).json({ message: "EDIT Expense Error", err: err });
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
+        res.status(500).json({ error: "EDIT Expense Error", ok: false });
     }
 };
 
@@ -74,12 +68,9 @@ exports.save = async (req, res) => {
         };
 
         const save = await Expense.save(expense);
-        res.json({ res: save });
+        res.status(200).json({ ok: true, res: save });
     } catch (err) {
-        res.status(500).json({ message: "SAVE Expense Error", err: err });
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
+        res.status(500).json({ error: "SAVE Expense Error", ok: false });
     }
 };
 
@@ -88,11 +79,8 @@ exports.delete = async (req, res) => {
 
     try {
         const deleteExpense = await Expense.delete(id);
-        res.json(deleteExpense);
+        res.status(200).json({ ok: true, ...deleteExpense });
     } catch (err) {
-        res.status(500).json({ message: "DELETE Expense Error", err: err });
-        if (!err.statusCode) {
-            err.statusCode = 500;
-        }
+        res.status(500).json({ error: "DELETE Expense Error", ok: false });
     }
 };

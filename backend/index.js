@@ -14,8 +14,6 @@ const expenseRoutes = require("./routes/expense.route");
 const mgmtRoutes = require("./routes/mgmt.route");
 const currencyRoutes = require("./routes/currency.route");
 
-const db = require("./util/database");
-
 const errorController = require("./controllers/error.controller");
 
 const app = express();
@@ -32,11 +30,11 @@ app.use(
 );
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://localhost:4200");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
+    res.setHeader("Access-Control-Allow-Origin", "https://localhost:4200");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
 });
 
 app.use("/auth", authRoutes);
@@ -49,23 +47,21 @@ app.use(errorController.get404);
 app.use(errorController.get500);
 
 const options = {
-  key: fs.readFileSync("server.key"),
-  cert: fs.readFileSync("server.cert"),
+    key: fs.readFileSync("server.key"),
+    cert: fs.readFileSync("server.cert"),
 };
 
 // Creating https server by passing
 // options and app object
-https.createServer(options, app).listen(ports, function (err) {
-  if (err) {
-    console.error("Failed to start HTTPS server:", err);
-  } else {
-    console.log(`HTTPS server started at port ${ports}`);
-  }
+https.createServer(options, app).listen(ports, function(err) {
+    if (err) {
+        console.error("Failed to start HTTPS server:", err);
+    } else {
+        console.log(`HTTPS server started at port ${ports}`);
+    }
 });
 
 // app.listen(ports, () => console.log(`Listening on port ${ports}`));
-
 module.exports = {
     port: process.env.PORT || 3000,
-    connection: db,
 };
