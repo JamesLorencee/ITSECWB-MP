@@ -200,6 +200,7 @@ module.exports = class User {
                     , name
                     , email
                     , isAdmin
+                    , isActive
                     , lastLogin
                 FROM users
                 WHERE id NOT LIKE ?
@@ -225,6 +226,7 @@ module.exports = class User {
                     , name
                     , email
                     , isAdmin
+                    , isActive
                     , lastLogin
                 FROM users
                 WHERE 
@@ -244,7 +246,7 @@ module.exports = class User {
   }
 
   /**
-   * Toggle role of user
+   * Return audit logs
    *
    * @returns audit logs
    */
