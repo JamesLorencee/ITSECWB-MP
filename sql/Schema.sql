@@ -103,6 +103,94 @@ LOCK TABLES `expenselogs` WRITE;
 /*!40000 ALTER TABLE `expenselogs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `expenselogs` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `expenselogs_AFTER_INSERT` AFTER INSERT ON `expenselogs` FOR EACH ROW BEGIN
+DECLARE changes TEXT;
+DECLARE newCategory VARCHAR(255);
+SET newCategory = (SELECT categoryName FROM categorylist WHERE categoryID = NEW.expenseSource);
+
+SET changes = CONCAT('Added amount ', NEW.expenseAmt, ' (', newCategory, ') ');
+
+INSERT INTO audit_logs (logID, timestamp, userID, eventType, action, details)
+  VALUES (uuid(), NOW(), NEW.userID, 'Expense', 'Added entry', changes);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `expenselogs_AFTER_UPDATE` AFTER UPDATE ON `expenselogs` FOR EACH ROW BEGIN
+ DECLARE changes TEXT;
+  DECLARE oldCategory VARCHAR(255);
+  DECLARE newCategory VARCHAR(255);
+
+  SET changes = '';
+  -- Get the old and new incomeSource names
+  SET oldCategory = (SELECT categoryName FROM categorylist WHERE categoryID = OLD.expenseSource);
+  SET newCategory = (SELECT categoryName FROM categorylist WHERE categoryID = NEW.expenseSource);
+  
+  IF OLD.expenseDate <> NEW.expenseDate THEN
+    SET changes = CONCAT(changes, 'Date changed from ', DATE_FORMAT(OLD.expenseDate,"%m-%d-%Y"), ' to ', DATE_FORMAT(NEW.expenseDate,"%m-%d-%Y"), '. ');
+  END IF;
+  IF OLD.expenseAmt <> NEW.expenseAmt THEN
+    SET changes = CONCAT(changes, 'Amount changed from ', OLD.expenseAmt, ' to ', NEW.expenseAmt, '. ');
+  END IF;
+  IF OLD.expenseSource <> NEW.expenseSource THEN
+    SET changes = CONCAT(changes, 'Source changed from ', oldCategory, ' to ', newCategory, '. ');
+  END IF;
+  IF OLD.expenseItem <> NEW.expenseItem THEN
+    SET changes = CONCAT(changes, 'Name changed from ', OLD.expenseItem, ' to ', NEW.expenseItem, '. ');
+  END IF;
+
+  INSERT INTO audit_logs (logID, timestamp, userID, eventType, action, details)
+  VALUES (uuid(), NOW(), NEW.userID, 'Expense', 'Updated entry', changes);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `expenselogs_AFTER_DELETE` AFTER DELETE ON `expenselogs` FOR EACH ROW BEGIN
+DECLARE changes TEXT;
+DECLARE oldCategory VARCHAR(255);
+SET oldCategory = (SELECT categoryName FROM categorylist WHERE categoryID = OLD.expenseSource);
+
+SET changes = CONCAT('Deleted amount ', OLD.expenseAmt, ' (', oldCategory, ') ');
+
+INSERT INTO audit_logs (logID, timestamp, userID, eventType, action, details)
+  VALUES (uuid(), NOW(), OLD.userID, 'Expense', 'Deleted entry', changes);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `incomelogs`
@@ -133,6 +221,91 @@ LOCK TABLES `incomelogs` WRITE;
 /*!40000 ALTER TABLE `incomelogs` DISABLE KEYS */;
 /*!40000 ALTER TABLE `incomelogs` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `incomelogs_AFTER_INSERT` AFTER INSERT ON `incomelogs` FOR EACH ROW BEGIN
+DECLARE changes TEXT;
+DECLARE newCategory VARCHAR(255);
+SET newCategory = (SELECT categoryName FROM categorylist WHERE categoryID = NEW.incomeSource);
+
+SET changes = CONCAT('Added amount ', NEW.incomeAmt, ' (', newCategory, ') ');
+
+INSERT INTO audit_logs (logID, timestamp, userID, eventType, action, details)
+  VALUES (uuid(), NOW(), NEW.userID, 'Income', 'Added entry', changes);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `incomelogs_AFTER_UPDATE` AFTER UPDATE ON `incomelogs` FOR EACH ROW BEGIN
+  DECLARE changes TEXT;
+  DECLARE oldCategory VARCHAR(255);
+  DECLARE newCategory VARCHAR(255);
+
+  SET changes = '';
+  -- Get the old and new incomeSource names
+  SET oldCategory = (SELECT categoryName FROM categorylist WHERE categoryID = OLD.incomeSource);
+  SET newCategory = (SELECT categoryName FROM categorylist WHERE categoryID = NEW.incomeSource);
+  
+  IF OLD.incomeDate <> NEW.incomeDate THEN
+    SET changes = CONCAT(changes, 'Date changed from ', DATE_FORMAT(OLD.incomeDate,"%m-%d-%Y"), ' to ', DATE_FORMAT(NEW.incomeDate,"%m-%d-%Y"), '. ');
+  END IF;
+  IF OLD.incomeAmt <> NEW.incomeAmt THEN
+    SET changes = CONCAT(changes, 'Amount changed from ', OLD.incomeAmt, ' to ', NEW.incomeAmt, '. ');
+  END IF;
+  IF OLD.incomeSource <> NEW.incomeSource THEN
+    SET changes = CONCAT(changes, 'Source changed from ', oldCategory, ' to ', newCategory, '. ');
+  END IF;
+
+  INSERT INTO audit_logs (logID, timestamp, userID, eventType, action, details)
+  VALUES (uuid(), NOW(), NEW.userID, 'Income', 'Updated entry', changes);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `incomelogs_AFTER_DELETE` AFTER DELETE ON `incomelogs` FOR EACH ROW BEGIN
+DECLARE changes TEXT;
+DECLARE oldCategory VARCHAR(255);
+SET oldCategory = (SELECT categoryName FROM categorylist WHERE categoryID = OLD.incomeSource);
+
+SET changes = CONCAT('Deleted amount ', OLD.incomeAmt, ' (', oldCategory, ') ');
+
+INSERT INTO audit_logs (logID, timestamp, userID, eventType, action, details)
+  VALUES (uuid(), NOW(), OLD.userID, 'Income', 'Deleted entry', changes);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `jwt_blacklist`
@@ -154,7 +327,6 @@ CREATE TABLE `jwt_blacklist` (
 
 LOCK TABLES `jwt_blacklist` WRITE;
 /*!40000 ALTER TABLE `jwt_blacklist` DISABLE KEYS */;
-INSERT INTO `jwt_blacklist` VALUES ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInVzZXJJZCI6ImE5YzJhNjBlLTJhNjMtMTFlZi04NmNhLTAwMTU1ZGJiZjY2OCIsImlzQWRtaW4iOjEsImlhdCI6MTcyMTE0NjE0NiwiZXhwIjoxNzIxMTQ3MDQ2fQ.LNSDdagOzsa9dg1wMRlCFnDEQ1yFCLJa9sSvmgjueEk','2024-07-17 00:24:06'),('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInVzZXJJZCI6ImE5YzJhNjBlLTJhNjMtMTFlZi04NmNhLTAwMTU1ZGJiZjY2OCIsImlzQWRtaW4iOjEsImlhdCI6MTcyMTE0NjE4MCwiZXhwIjoxNzIxMTQ3MDgwfQ.A7HV0jlR8Qyd1E77DoRkDM_LBbZictHR6Oq2ocgWwq4','2024-07-17 00:24:40'),('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwidXNlcklkIjoiMmVmY2UyMjQtMmE2NS0xMWVmLTlkYjItZTRhOGRmYjMyYzljIiwiaXNBZG1pbiI6MCwiaWF0IjoxNzIxMTQ2MjEyLCJleHAiOjE3MjExNDcxMTJ9.Ube7kyvVLuJwF6eNyy3ujaMPdUXo9o4FCg2_P8oqMhs','2024-07-17 00:25:12');
 /*!40000 ALTER TABLE `jwt_blacklist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,7 +358,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('2efce224-2a65-11ef-9db2-e4a8dfb32c9c','usr','user@gmail.com','$2a$12$tK2.HUxmeImEuJdnmOzKA.AkaaTuPLyrzaE9ztcDODCJiGi6Y1GFK','09392313505','1718379953768.png',0,NULL),('a9c2a60e-2a63-11ef-86ca-00155dbbf668','Admin','admin@gmail.com','$2a$12$tK2.HUxmeImEuJdnmOzKA.AkaaTuPLyrzaE9ztcDODCJiGi6Y1GFK','09876543210','1718379300550.jpg',1,'$2a$12$J3YJ1QkDhtEL.Jp6nZQQLe1pdqafMc/dB2IXg3Pb1bG1yjMHhO75m');
+INSERT INTO `users` VALUES ('2efce224-2a65-11ef-9db2-e4a8dfb32c9c','user','user@gmail.com','$2a$12$tK2.HUxmeImEuJdnmOzKA.AkaaTuPLyrzaE9ztcDODCJiGi6Y1GFK','09876543210','photo.png',0,1,NULL,NULL),('a9c2a60e-2a63-11ef-86ca-00155dbbf668','admin','admin@gmail.com','$2a$12$tK2.HUxmeImEuJdnmOzKA.AkaaTuPLyrzaE9ztcDODCJiGi6Y1GFK','09876543210','photoAdmin.png',1,1,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -199,4 +371,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-17  0:31:03
+-- Dump completed on 2024-08-08 19:08:02
