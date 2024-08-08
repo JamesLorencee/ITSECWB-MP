@@ -43,7 +43,6 @@ exports.getUserByID = async (req, res) => {
 
 exports.getLogs = async (req, res) => {
   try {
-    console.log("LOGS");
     const logList = await User.getLogs();
     res.status(200).json({ ok: true, logList: logList });
   } catch (err) {

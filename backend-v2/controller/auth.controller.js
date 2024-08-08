@@ -95,7 +95,6 @@ exports.signin = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-      console.log(user);
       let json = { ok: false, error: "3Signin Error" };
       logger.error(`Login attempt failed with email: ${email}`);
       return res.status(401).json(json);

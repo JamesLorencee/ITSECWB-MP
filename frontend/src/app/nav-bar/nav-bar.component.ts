@@ -25,7 +25,6 @@ export class NavBarComponent {
       this.isAdmin = isAdmin.same;
     });
     this.authService.getUser().subscribe((res) => {
-      console.log(res);
       this.user = res.user;
       this.authService.getImage(this.user.photoFileName).subscribe((blob) => {
         const objectURL = URL.createObjectURL(blob);
