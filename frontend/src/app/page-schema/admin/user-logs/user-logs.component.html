@@ -1,26 +1,6 @@
 <app-main-template>
   <div class="flex w-full justify-between">
     <h1 class="text-2xl font-semibold tex-text">User Logs</h1>
-    <div class="flex gap-2">
-      <select
-        class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-      >
-        <option value="" disabled selected>Filter by date</option>
-        <option value="1">This day</option>
-        <option value="2">This week</option>
-        <option value="3">This month</option>
-      </select>
-      <div class="relative">
-        <div class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-          <ng-icon name="matFilterAltOutline" size="20px" class="mr-0 text-gray-400"></ng-icon>
-        </div>
-        <input
-          type="search"
-          class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-          placeholder="Filter by search"
-        />
-      </div>
-    </div>
   </div>
   <hr class="h-[1px] w-full bg-neutral-100" />
   <div class="relative mb-5 overflow-x-auto border-2 border-solid bg-white border-neutral-100 shadow-md sm:rounded-lg">

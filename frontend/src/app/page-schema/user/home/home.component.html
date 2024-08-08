@@ -2,14 +2,6 @@
   <div class="flex w-full justify-between">
     <h1 class="text-2xl font-semibold tex-text">Expense Log</h1>
     <div class="flex gap-4">
-      <select
-        class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-      >
-        <option value="" disabled selected>Filter by date</option>
-        <option value="1">This day</option>
-        <option value="2">This week</option>
-        <option value="3">This month</option>
-      </select>
       <button class="btn-primary" type="button" (click)="toggleModal(1)">
         <ng-icon name="matPlusOutline" size="1rem" class="text-text"></ng-icon>Add Expense
       </button>
@@ -36,8 +28,10 @@
       <tbody class="bg-white" *ngIf="expenseList">
         <tr class="border-b text-left" *ngFor="let entry of expenseList">
           <td class="px-6 py-4">{{ entry.formatDate }}</td>
-          <th scope="row" class="whitespace-nowrap px-6 py-4 text-base font-semibold text-text">{{ entry.expenseItem }}</th>
-          <td class="px-6 py-4">{{ entry.categoryExpense}}</td>
+          <th scope="row" class="whitespace-nowrap px-6 py-4 text-base font-semibold text-text">
+            {{ entry.expenseItem }}
+          </th>
+          <td class="px-6 py-4">{{ entry.categoryExpense }}</td>
           <td class="px-6 py-4">{{ entry.expenseAmt }}</td>
           <td class="px-2 py-4 text-center">
             <button class="px-2 py-1" type="button" (click)="toggleModal(2, true, entry.expenseID)">
@@ -58,206 +52,183 @@
       </tbody>
     </table>
   </div>
-<!-- Add Expense Modal -->
-  <app-modal
-    *ngIf="idNum === 1"
-    [isOpen]="isModalOpen"
-    [hasHeader]="true"
-    headerName="Add Expense"
-  >
-  <form [formGroup]="addForm" (submit)="addExpense()">
-    <div class="input-group mb-4">
-      <h4 class="text-base font-medium text-neutral-600">
-        Date
-      </h4>
-      <mat-form-field
-        class="border-[1px]rounded-md w-50% h-50 rounded border border-gray-300 bg-gray-50 px-3 py-2 text-xs dark:border-neutral-600"
-      >
-        <mat-label>Choose a date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker"
-          formControlName="addDate"
-        />
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <span
-        class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
-        [ngStyle]="{
-          display:
-            addForm.get('addDate')!.invalid && submitted ? 'block' : 'none'
-        }"
-        >Please enter a date.</span
-      >
-    </div>
-    <div class="input-group mb-4">
-      <h4 class="text-base font-medium text-neutral-600">Item</h4>
-      <input
-        placeholder="Enter Item Name"
-        type="text"
-        formControlName="addItem"
-        class="border-[1px]rounded-md w-90 rounded border border-gray-300 bg-gray-50 px-3 py-2 text-xs dark:border-neutral-600"
-      />
-      <span
-        class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
-        [ngStyle]="{
-          display:
-            addForm.get('addItem')!.invalid && submitted ? 'block' : 'none'
-        }"
-        >Please input an item that has atleast 1 character and at most 36.</span
-      >
-    </div>
-
-    <div class="input-group mb-4">
-      <h4 class="text-base font-small text-neutral-600">Category</h4>
-      <select
-        class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-        formControlName="addSrc"
-      >
-        <option disabled selected value="">Select Category</option>
-        <option *ngFor="let category of categoryList; let i = index" [value]="category.categoryID">
-          {{ category.categoryName }}
-        </option>
-      </select>
-      <span
-        class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
-        [ngStyle]="{
-          display: addForm.get('addSrc')!.invalid && submitted ? 'block' : 'none',
-        }"
-        >Please select a category.</span
-      >
-    </div>
-
-
-
-    <div class="input-group mb-4">
-      <h4 class="text-base font-medium text-neutral-600">Price</h4>
-      <div class="relative">
-        <input
-          placeholder="00.00"
-          type="number"
-          formControlName="addAmt"
-          class="price-input border-[1px] rounded-md w-50 rounded border border-gray-300 bg-gray-50 px-3 py-2 pl-12 text-xs dark:border-neutral-600"
-          min="0"
-          step="0.01"
-        />
-        <span class="absolute left-3 top-2 text-gray-500">Php</span>
+  <!-- Add Expense Modal -->
+  <app-modal *ngIf="idNum === 1" [isOpen]="isModalOpen" [hasHeader]="true" headerName="Add Expense">
+    <form [formGroup]="addForm" (submit)="addExpense()">
+      <div class="input-group mb-4">
+        <h4 class="text-base font-medium text-neutral-600">Date</h4>
+        <mat-form-field
+          class="rounded-md w-50% h-50 border border-gray-300 bg-gray-50 px-3 py-2 text-xs dark:border-neutral-600"
+        >
+          <mat-label>Choose a date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="addDate" />
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <span
+          class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
+          [ngStyle]="{
+            display: addForm.get('addDate')!.invalid && submitted ? 'block' : 'none',
+          }"
+          >Please enter a date.</span
+        >
       </div>
-      <span
-        class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
-        [ngStyle]="{
-          display:
-            addForm.get('addAmt')!.invalid && submitted ? 'block' : 'none'
-        }"
-        >Please input a Price between 0 to 99999999.99.</span
+      <div class="input-group mb-4">
+        <h4 class="text-base font-medium text-neutral-600">Item</h4>
+        <input
+          placeholder="Enter Item Name"
+          type="text"
+          formControlName="addItem"
+          class="rounded-md w-90 border border-gray-300 bg-gray-50 px-3 py-2 text-xs dark:border-neutral-600"
+        />
+        <span
+          class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
+          [ngStyle]="{
+            display: addForm.get('addItem')!.invalid && submitted ? 'block' : 'none',
+          }"
+          >Please input an item that has atleast 1 character and at most 36.</span
+        >
+      </div>
+
+      <div class="input-group mb-4">
+        <h4 class="text-base font-small text-neutral-600">Category</h4>
+        <select
+          class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+          formControlName="addSrc"
+        >
+          <option disabled selected value="">Select Category</option>
+          <option *ngFor="let category of categoryList; let i = index" [value]="category.categoryID">
+            {{ category.categoryName }}
+          </option>
+        </select>
+        <span
+          class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
+          [ngStyle]="{
+            display: addForm.get('addSrc')!.invalid && submitted ? 'block' : 'none',
+          }"
+          >Please select a category.</span
+        >
+      </div>
+
+      <div class="input-group mb-4">
+        <h4 class="text-base font-medium text-neutral-600">Price</h4>
+        <div class="relative">
+          <input
+            placeholder="00.00"
+            type="number"
+            formControlName="addAmt"
+            class="price-input rounded-md w-50 border border-gray-300 bg-gray-50 px-3 py-2 pl-12 text-xs dark:border-neutral-600"
+            min="0"
+            step="0.01"
+          />
+          <span class="absolute left-3 top-2 text-gray-500">Php</span>
+        </div>
+        <span
+          class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
+          [ngStyle]="{
+            display: addForm.get('addAmt')!.invalid && submitted ? 'block' : 'none',
+          }"
+          >Please input a Price between 0 to 99999999.99.</span
+        >
+      </div>
+      <hr class="mb-6 mt-2 h-[2px] w-full bg-neutral-300" />
+      <button
+        class="flex w-50 items-center justify-center gap-3 rounded bg-lime-700 px-6 py-2 hover:bg-lime-600 dark:bg-lime-700 dark:hover:bg-lime-600"
+        type="submit"
       >
-    </div>
-    <hr class="mb-6 mt-2 h-[2px] w-full bg-neutral-300" />
-    <button
-      class="flex w-50 items-center justify-center gap-3 rounded bg-lime-700 px-6 py-2 hover:bg-lime-600 dark:bg-lime-700 dark:hover:bg-lime-600"
-      type="submit"
-    >
-      <p class="text-xs font-medium text-white">Add</p>
-    </button>
-  </form>
+        <p class="text-xs font-medium text-white">Add</p>
+      </button>
+    </form>
   </app-modal>
-<!-- Add Expense Modal -->
+  <!-- Add Expense Modal -->
 
-
-
-<!-- Edit Expense Modal -->
-<app-modal *ngIf="idNum === 2" [isOpen]="isModalOpen" [hasHeader]="true" headerName="Edit Expense">
-  <form [formGroup]="editForm" (submit)="saveExpense(editID)">
-    <div class="input-group mb-4">
-      <h4 class="text-base font-medium text-neutral-600">Date</h4>
-      <mat-form-field
-        class="border-[1px]rounded-md w-50% h-50 rounded border border-gray-300 bg-gray-50 px-3 py-2 text-xs dark:border-neutral-600"
-      >
-        <mat-label>Choose a date</mat-label>
-        <input matInput [matDatepicker]="picker" formControlName="editDate" />
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <span
-        class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
-        [ngStyle]="{
-          display: editForm.get('editDate')!.invalid && submitted ? 'block' : 'none',
-        }"
-        >Please enter a date.</span
-      >
-    </div>
-    <div class="input-group mb-4">
-      <h4 class="text-base font-medium text-neutral-600">Item</h4>
-      <input
-        placeholder="Enter Item Name"
-        type="text"
-        formControlName="editItem"
-        class="border-[1px]rounded-md w-90 rounded border border-gray-300 bg-gray-50 px-3 py-2 text-xs dark:border-neutral-600"
-      />
-      <span
-        class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
-        [ngStyle]="{
-          display:
-            editForm.get('editItem')!.invalid && submitted ? 'block' : 'none'
-        }"
-        >Please input an item that has atleast 1 character and at most 36.</span>
-    </div>
-    <div class="input-group mb-4">
-      <h4 class="text-base font-medium text-neutral-600">Price</h4>
-      <div class="relative">
-        <input
-          placeholder="00.00"
-          type="number"
-          formControlName="editAmt"
-          class="price-input border-[1px] rounded-md w-50 rounded border border-gray-300 bg-gray-50 px-3 py-2 pl-12 text-xs dark:border-neutral-600"
-          min="0"
-          step="0.01"
-        />
-        <span class="absolute left-3 top-2 text-gray-500">Php</span>
+  <!-- Edit Expense Modal -->
+  <app-modal *ngIf="idNum === 2" [isOpen]="isModalOpen" [hasHeader]="true" headerName="Edit Expense">
+    <form [formGroup]="editForm" (submit)="saveExpense(editID)">
+      <div class="input-group mb-4">
+        <h4 class="text-base font-medium text-neutral-600">Date</h4>
+        <mat-form-field
+          class="rounded-md w-50% h-50 border border-gray-300 bg-gray-50 px-3 py-2 text-xs dark:border-neutral-600"
+        >
+          <mat-label>Choose a date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="editDate" />
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <span
+          class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
+          [ngStyle]="{
+            display: editForm.get('editDate')!.invalid && submitted ? 'block' : 'none',
+          }"
+          >Please enter a date.</span
+        >
       </div>
-      <span
-        class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
-        [ngStyle]="{
-          display: editForm.get('editAmt')!.invalid && submitted ? 'block' : 'none',
-        }"
-        >Please input a Price between 0 to 99999999.99.</span
-      >
-    </div>
-    <div class="input-group mb-4">
-      <h4 class="text-base font-small text-neutral-600">Category</h4>
-      <select
-        class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
-        formControlName="editSrc"
-      >
-        <option disabled selected value="">Select Category</option>
-        <option *ngFor="let category of categoryList; let i = index" [value]="category.categoryID">
-          {{ category.categoryName }}
-        </option>
-      </select>
-      <span
-        class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
-        [ngStyle]="{
-          display: editForm.get('editSrc')!.invalid && submitted ? 'block' : 'none',
-        }"
-        >Please select a category.</span
-      >
-    </div>
+      <div class="input-group mb-4">
+        <h4 class="text-base font-medium text-neutral-600">Item</h4>
+        <input
+          placeholder="Enter Item Name"
+          type="text"
+          formControlName="editItem"
+          class="rounded-md w-90 border border-gray-300 bg-gray-50 px-3 py-2 text-xs dark:border-neutral-600"
+        />
+        <span
+          class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
+          [ngStyle]="{
+            display: editForm.get('editItem')!.invalid && submitted ? 'block' : 'none',
+          }"
+          >Please input an item that has atleast 1 character and at most 36.</span
+        >
+      </div>
+      <div class="input-group mb-4">
+        <h4 class="text-base font-medium text-neutral-600">Price</h4>
+        <div class="relative">
+          <input
+            placeholder="00.00"
+            type="number"
+            formControlName="editAmt"
+            class="price-input rounded-md w-50 border border-gray-300 bg-gray-50 px-3 py-2 pl-12 text-xs dark:border-neutral-600"
+            min="0"
+            step="0.01"
+          />
+          <span class="absolute left-3 top-2 text-gray-500">Php</span>
+        </div>
+        <span
+          class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
+          [ngStyle]="{
+            display: editForm.get('editAmt')!.invalid && submitted ? 'block' : 'none',
+          }"
+          >Please input a Price between 0 to 99999999.99.</span
+        >
+      </div>
+      <div class="input-group mb-4">
+        <h4 class="text-base font-small text-neutral-600">Category</h4>
+        <select
+          class="block w-60 py-2 rounded-lg border border-gray-300 bg-gray-50 ps-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+          formControlName="editSrc"
+        >
+          <option disabled selected value="">Select Category</option>
+          <option *ngFor="let category of categoryList; let i = index" [value]="category.categoryID">
+            {{ category.categoryName }}
+          </option>
+        </select>
+        <span
+          class="text-warning-500 text-[10px] font-medium text-red-600 dark:text-red-500"
+          [ngStyle]="{
+            display: editForm.get('editSrc')!.invalid && submitted ? 'block' : 'none',
+          }"
+          >Please select a category.</span
+        >
+      </div>
 
-    <hr class="mb-6 mt-2 h-[2px] w-full bg-neutral-300" />
-    <button
-      class="flex w-50 items-center justify-center gap-3 rounded bg-lime-700 px-6 py-2 hover:bg-lime-600 dark:bg-lime-700 dark:hover:bg-lime-600"
-      type="submit"
-    >
-      <p class="text-base font-medium text-white">Save</p>
-    </button>
-  </form>
-</app-modal>
-
-
+      <hr class="mb-6 mt-2 h-[2px] w-full bg-neutral-300" />
+      <button
+        class="flex w-50 items-center justify-center gap-3 rounded bg-lime-700 px-6 py-2 hover:bg-lime-600 dark:bg-lime-700 dark:hover:bg-lime-600"
+        type="submit"
+      >
+        <p class="text-base font-medium text-white">Save</p>
+      </button>
+    </form>
+  </app-modal>
 </app-main-template>
