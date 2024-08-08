@@ -15,12 +15,7 @@ exports.validateIncomeMiddleware = async (req, res, next) => {
   }
 
   // Validate incomeAmt
-  const amtPattern = /^(?!0\d)\d{1,8}(\.\d{1,2})?$/;
-  if (
-    !amtPattern.test(incomeAmt) ||
-    Number(incomeAmt) < 0 ||
-    Number(incomeAmt) > 99999999.99
-  ) {
+  if (Number(incomeAmt) < 0 || Number(incomeAmt) > 99999999.99) {
     let json = {
       ok: false,
       error: "Invalid incomeAmt. Must be between 0 and 99999999.99.",
@@ -41,12 +36,10 @@ exports.validateIncomeMiddleware = async (req, res, next) => {
 
     const [rows, _fields] = await connection.execute(query, params);
     if (!rows.length)
-      return res
-        .status(400)
-        .json({
-          ok: false,
-          error: "Invalid incomeSrc. Must be a non-empty string.",
-        });
+      return res.status(400).json({
+        ok: false,
+        error: "Invalid incomeSrc. Must be a non-empty string.",
+      });
   } catch (err) {
     let json = {
       ok: false,
