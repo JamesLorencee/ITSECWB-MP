@@ -1,32 +1,17 @@
 const express = require("express");
 const { body } = require("express-validator");
 const router = express.Router();
-const expenseController = require("../controllers/expense.controller");
+const expenseController = require("../controller/expense.controller");
 const { authenticateJWT } = require("../middleware/jwt");
 
-router.get("/get",
-    authenticateJWT,
-    expenseController.get
-);
+router.get("/get", authenticateJWT, expenseController.get);
 
-router.post("/add",
-    authenticateJWT,
-    expenseController.add
-);
+router.post("/add", authenticateJWT, expenseController.add);
 
-router.delete("/:expenseID",
-    authenticateJWT,
-    expenseController.delete
-);
+router.delete("/:expenseID", authenticateJWT, expenseController.delete);
 
-router.get("/edit/:expenseID",
-    authenticateJWT,
-    expenseController.edit
-);
+router.get("/edit/:expenseID", authenticateJWT, expenseController.edit);
 
-router.post("/",
-    authenticateJWT,
-    expenseController.save
-);
+router.post("/", authenticateJWT, expenseController.save);
 
 module.exports = router;
