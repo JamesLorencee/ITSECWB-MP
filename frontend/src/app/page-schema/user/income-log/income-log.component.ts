@@ -26,13 +26,13 @@ export class IncomeLogComponent {
 
   addForm: FormGroup = this.fb.group({
     addDate: ['', Validators.required],
-    addAmt: ['', [Validators.required, Validators.pattern('^d{1,8}(.d{1,2})?$'), Validators.maxLength(36)]],
+    addAmt: ['', [Validators.required, Validators.min(0), Validators.max(99999999.99)]],
     addSrc: ['', Validators.required],
   });
 
   editForm: FormGroup = this.fb.group({
     editDate: ['', Validators.required],
-    editAmt: ['', [Validators.required, Validators.pattern('^d{1,8}(.d{1,2})?$'), Validators.maxLength(36)]],
+    editAmt: ['', [Validators.required, Validators.min(0), Validators.max(99999999.99)]],
     editSrc: ['', Validators.required],
   });
 

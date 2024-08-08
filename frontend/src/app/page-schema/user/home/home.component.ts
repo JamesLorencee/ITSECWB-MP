@@ -34,14 +34,14 @@ export class UserHomeComponent {
     addItem: ['', [Validators.required, Validators.maxLength(36)]],
     addSrc: ['', Validators.required],
     addDate: ['', Validators.required],
-    addAmt: ['', [Validators.required, Validators.pattern('^d{1,8}(.d{1,2})?$')]],
+    addAmt: ['', [Validators.required, Validators.min(0), Validators.max(99999999.99)]],
   });
 
   editForm: FormGroup = this.fb.group({
     editItem: ['', [Validators.required, Validators.maxLength(36)]],
     editSrc: ['', Validators.required],
     editDate: ['', Validators.required],
-    editAmt: ['', [Validators.required, Validators.pattern('^d{1,8}(.d{1,2})?$')]],
+    editAmt: ['', [Validators.required, Validators.min(0), Validators.max(99999999.99)]],
   });
 
   ngOnInit() {
