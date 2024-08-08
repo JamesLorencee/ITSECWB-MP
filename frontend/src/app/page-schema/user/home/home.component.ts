@@ -54,13 +54,11 @@ export class UserHomeComponent {
 
     if (idNum == 2) {
       this.editExpense(expenseID!);
-      console.log(Response);
     }
   }
 
   viewExpense() {
     this.expenseService.getExpense().subscribe((res) => {
-      console.log(res);
       if (res.expenseList.length > 0) {
         this.expenseList = res.expenseList;
       }
@@ -71,7 +69,6 @@ export class UserHomeComponent {
   addExpense() {
     this.submitted = true;
     if (this.addForm.valid) {
-      console.log(this.addForm.value);
       this.expenseService
         .addExpense(
           this.addForm.get(['addDate'])!.value,
@@ -97,7 +94,6 @@ export class UserHomeComponent {
         editAmt: edit.expenseAmt,
         editSrc: edit.expenseSource,
       });
-      console.log(res);
       this.editID = edit.expenseID;
     });
   }
@@ -105,7 +101,6 @@ export class UserHomeComponent {
   saveExpense(expenseID: string) {
     this.submitted = true;
     if (this.editForm.valid) {
-      console.log(expenseID);
       this.expenseService
         .saveExpense(
           this.editForm.get(['editDate'])!.value,
@@ -123,7 +118,6 @@ export class UserHomeComponent {
   }
 
   deleteExpense(expenseID: string) {
-    console.log(expenseID);
     this.expenseService.deleteExpense(expenseID).subscribe(() => {
       this.viewExpense();
     });

@@ -48,13 +48,11 @@ export class IncomeLogComponent {
     if (idNum == 2) {
       //Edit Modal
       this.editIncome(incomeID!);
-      console.log(incomeID);
     }
   }
 
   viewIncome() {
     this.incomeService.getIncome().subscribe((res) => {
-      console.log(res);
       if (res.incomeList.length > 0) {
         this.incomeList = res.incomeList;
       }
@@ -65,7 +63,6 @@ export class IncomeLogComponent {
   addIncome() {
     this.submitted = true;
     if (this.addForm.valid) {
-      console.log(this.addForm.value);
       this.incomeService
         .addIncome(
           this.addForm.get(['addDate'])!.value,
@@ -82,7 +79,6 @@ export class IncomeLogComponent {
   }
 
   deleteIncome(incomeID: string) {
-    console.log(incomeID);
     this.incomeService.deleteIncome(incomeID).subscribe(() => {
       this.viewIncome();
     });
@@ -96,7 +92,6 @@ export class IncomeLogComponent {
         editAmt: edit.incomeAmt,
         editSrc: edit.incomeSource,
       });
-      console.log(res);
       this.editID = edit.incomeID;
     });
   }

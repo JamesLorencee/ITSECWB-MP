@@ -18,8 +18,7 @@ export class NavBarComponent {
 
   ngOnInit() {
     this.authService.compareRole(true).subscribe((isAdmin) => {
-      this.isAdmin = isAdmin;
-      console.log(this.isAdmin);
+      this.isAdmin = isAdmin.ok;
     });
   }
 
