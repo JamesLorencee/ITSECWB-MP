@@ -9,7 +9,7 @@ import { env } from './environment/environment';
 export class AuthService {
   private baseUrl = `${env.baseUrl}auth`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   //done
   signin(email: string, password: string): Observable<any> {
@@ -57,5 +57,9 @@ export class AuthService {
 
   getUser(): Observable<any> {
     return this.http.get(`${this.baseUrl}/getuser`, { withCredentials: true });
+  }
+
+  getImage(fileName: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/api/image/${fileName}`, { responseType: 'blob', withCredentials: true });
   }
 }

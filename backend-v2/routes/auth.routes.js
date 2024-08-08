@@ -83,5 +83,6 @@ router.post(
 );
 
 router.get("/getuser", authenticateJWT, authController.getUser);
+router.get("/api/image/:filename", authenticateJWT, authController.getImage);
 
 module.exports = router;
