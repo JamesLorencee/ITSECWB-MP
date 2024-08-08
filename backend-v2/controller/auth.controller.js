@@ -14,8 +14,8 @@ const {
 exports.authenticateRoles = (req, res) => {
     const role = req.params.isAdmin;
     if ((req.user.isAdmin ? "true" : "false") == role)
-        return res.status(200).json({ ok: true });
-    return res.status(200).json({ ok: false });
+        return res.status(200).json({ ok: true, same: true });
+    return res.status(200).json({ ok: true, same: false });
 };
 
 exports.signup = async (req, res) => {
