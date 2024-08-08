@@ -1,6 +1,7 @@
 # nodemodules
 frontend/node_modules
 backend/node_modules
+backend
 # Logs
 logs
 *.log
