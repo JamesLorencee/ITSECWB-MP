@@ -49,7 +49,11 @@ exports.authenticateJWT = (req, res, next) => {
         req.user = accessPayload;
     } catch (err) {
         clearJWTCookies(res);
-        return res.status(401).json({ ok: false, error: "Invalid Authentication Please Log-in" });
+        let json = { ok: false, error: "Invalid Authentication Please Log-in" };
+
+        if (process.env.DEBUG) json = { ...json, stack: err.stack };
+
+        return res.status(401).json(json);
     }
     return next();
 }

@@ -77,6 +77,7 @@ server.listen(ports, () => {
 });
 
 server.on('error', (err) => {
-    logger.error("Failed to start HTTPS server", err)
+    logger.error("Failed to start HTTPS server", err.message)
+    logger.debug(err);
 })
 // app.listen(ports, () => console.log(`Listening on port ${ports}`));
