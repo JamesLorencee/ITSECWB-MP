@@ -1,4 +1,5 @@
 const Income = require("../models/income");
+const { logger } = require("../util/logger");
 
 exports.get = async (req, res) => {
   const uid = req.user.userId;
@@ -35,6 +36,9 @@ exports.add = async (req, res) => {
 
     const add = await Income.add(income);
     res.status(200).json({ ok: true, res: add });
+    logger.info(
+      `User ${uid} added income: Amount: ${incomeAmt}, Source: ${incomeSrc}`
+    );
   } catch (err) {
     let json = { ok: false, error: "Income Error" };
     if (process.env.DEBUG) json = { ...json, stack: err.stack };
@@ -75,6 +79,9 @@ exports.save = async (req, res) => {
 
     const save = await Income.save(income);
     res.status(200).json({ ok: true, res: save });
+    logger.info(
+      `User ${uid} edited income: Income ID: ${incomeID}, Amount: ${incomeAmt}, Source: ${incomeSrc}`
+    );
   } catch (err) {
     let json = { ok: false, error: "Income Error" };
     if (process.env.DEBUG) json = { ...json, stack: err.stack };
@@ -85,10 +92,12 @@ exports.save = async (req, res) => {
 
 exports.delete = async (req, res) => {
   const id = req.params.incomeID;
+  const uid = req.user.userId;
 
   try {
     const deleteIncome = await Income.delete(id);
     res.status(200).json({ ok: true, ...deleteIncome });
+    logger.info(`User ${uid} deleted income: Income ID: ${id}`);
   } catch (err) {
     let json = { ok: false, error: "Income Error" };
     if (process.env.DEBUG) json = { ...json, stack: err.stack };
