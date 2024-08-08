@@ -12,14 +12,14 @@ export class NavBarComponent {
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-  ) {}
+  ) { }
 
   isAdmin: boolean = false;
   user: any;
 
   ngOnInit() {
     this.authService.compareRole(true).subscribe((isAdmin) => {
-      this.isAdmin = isAdmin.ok;
+      this.isAdmin = isAdmin.same;
     });
     this.authService.getUser().subscribe((res) => {
       console.log(res);

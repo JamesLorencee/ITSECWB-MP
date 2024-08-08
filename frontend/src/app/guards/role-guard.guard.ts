@@ -14,22 +14,26 @@ export class RoleGuardService implements CanActivate {
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    const isAdminData = route.data['isAdmin'];
+    let isAdminData = route.data['isAdmin'];
+
+    if (isAdminData == undefined) {
+      this.router.navigate(['/login']);
+      return of(false)
+    }
 
     return this.authService.compareRole(isAdminData).pipe(
-      map((authorized) => {
-        if (authorized.ok && isAdminData !== undefined) {
-          if (state.url === '/login' || state.url === '/register') {
+      map((sameRole) => {
+        if (sameRole.ok) {
+          if (!sameRole.same) {
+            isAdminData = !isAdminData;
             if (isAdminData) {
               this.router.navigate(['/admin']);
             } else {
               this.router.navigate(['/user']);
             }
-            // this.router.navigate(['/login']);
             return false;
-          } else {
-            return true;
           }
+          return true;
         } else {
           this.router.navigate(['/login']);
           return false;

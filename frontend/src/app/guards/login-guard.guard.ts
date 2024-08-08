@@ -19,7 +19,7 @@ export class LoginGuard implements CanActivate {
       map((isLoggedIn: any) => {
         if (isLoggedIn) {
           this.authService.compareRole(true).subscribe((isAdmin) => {
-            if (isAdmin) {
+            if (isAdmin.same) {
               this.router.navigate(['/admin']); // Redirect admin to admin dashboard
             } else {
               this.router.navigate(['/user']); // Redirect user to user dashboard
