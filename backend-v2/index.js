@@ -9,8 +9,9 @@ const https = require("https");
 const cors = require("cors");
 const fs = require("fs");
 
+const { logger } = require("./util/logger");
+
 const authRoutes = require("./routes/auth.routes");
-const userRoutes = require("./routes/user.routes");
 const app = express();
 const ports = process.env.PORT || 3000;
 
@@ -52,12 +53,13 @@ app.use("/auth", authRoutes);
 
 // Creating https server by passing
 // options and app object
-https.createServer(options, app).listen(ports, (err) => {
-    if (err) {
-        console.error("Failed to start HTTPS server:", err);
-    } else {
-        console.log(`HTTPS server started at port ${ports}`);
-    }
+const server = https.createServer(options, app)
+
+server.listen(ports, () => {
+    logger.error(`HTTPS server started at port ${ports}`)
 });
 
+server.on('error', (err) => {
+    logger.error("Failed to start HTTPS server", err)
+})
 // app.listen(ports, () => console.log(`Listening on port ${ports}`));
