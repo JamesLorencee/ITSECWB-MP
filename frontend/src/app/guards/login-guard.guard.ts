@@ -12,7 +12,7 @@ export class LoginGuard implements CanActivate {
   constructor(
     private router: Router,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.authService.isLoggedIn().pipe(
@@ -34,7 +34,7 @@ export class LoginGuard implements CanActivate {
       }),
       catchError(() => {
         // Handle any errors that occur during authentication check
-        console.error('Error checking authentication status');
+        // console.error('Error checking authentication status');
         return of(false); // Can also return true or false based on your error handling strategy
       }),
     );

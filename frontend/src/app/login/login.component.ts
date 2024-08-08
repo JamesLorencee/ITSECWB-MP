@@ -28,7 +28,7 @@ export class LoginComponent {
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   get f() {
     return this.loginForm.controls;
@@ -51,8 +51,8 @@ export class LoginComponent {
         this.errorMessage = '';
       },
       error: (error) => {
-        this.errorMessage = error.error.message;
-        console.error('Error:', error);
+        this.errorMessage = 'Invalid email and/or password.';
+        // console.error('Error:', error);
       },
     });
   }
