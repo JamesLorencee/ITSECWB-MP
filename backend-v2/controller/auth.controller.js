@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 const User = require("../models/user");
+const { logger } = require("../util/logger");
 const { validationResult } = require("express-validator");
 const {
   generateAccessToken,
@@ -53,6 +54,7 @@ exports.signup = async (req, res) => {
       }
 
       res.status(201).json({ ok: true, message: "User registered!" });
+      logger.info(`User ${uuid} with the Name: ${name}, Email: ${email}, Phone Num: ${phoneNumber} Successfully Registered `);
     });
   } catch (err) {
     let json = { ok: false, error: "Signup Error" };
@@ -107,6 +109,7 @@ exports.signin = async (req, res) => {
 
     User.setLastLogin(userAccess.userId);
     res.status(200).json({ ok: true, message: "Login Successful" });
+    logger.info(`User ${user.id} Successfully Logged In`);
   } catch (err) {
     let json = { ok: false, error: "Login Error" };
     if (process.env.DEBUG) json = { ...json, stack: err.stack };
