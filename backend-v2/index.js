@@ -21,24 +21,24 @@ const errorController = require("./controller/error.controller");
 const app = express();
 const ports = process.env.PORT || 3000;
 
-// app.use(
-//     helmet.contentSecurityPolicy({
-//         directives: {
-//             defaultSrc: ["'self'"],
-//             scriptSrc: ["'self'", "trusted-scripts.com"],
-//             objectSrc: ["'none'"],
-//             upgradeInsecureRequests: [],
-//         },
-//     })
-// );
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "trusted-scripts.com"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  })
+);
 
-// app.use(
-//     helmet.hsts({
-//         maxAge: 31536000, // 1 year
-//         includeSubDomains: true,
-//         preload: true,
-//     })
-// );
+app.use(
+  helmet.hsts({
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+    preload: true,
+  })
+);
 app.use(helmet());
 app.use(xss());
 app.use(cookieParser(process.env.COOKIES_SECRET));
