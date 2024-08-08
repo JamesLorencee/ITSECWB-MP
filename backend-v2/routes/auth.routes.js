@@ -82,4 +82,6 @@ router.post(
   authController.signin
 );
 
+router.get("/getuser", authenticateJWT, authController.getUser);
+
 module.exports = router;

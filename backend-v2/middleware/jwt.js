@@ -12,10 +12,11 @@ const User = require("../models/user");
 exports.authenticateJWT = (req, res, next) => {
   const access = req.cookies["aid"];
   const refresh = req.cookies["rid"];
-
+  console.log(access);
+  console.log(refresh);
   if (!access || !refresh) {
     clearJWTCookies(res);
-    return res.status(401).json({ ok: false, message: "Invalid Login" });
+    return res.status(401).json({ ok: false, message: "1Invalid Login" });
   }
   try {
     const refreshPayload = verify(refresh, process.env.JWT_REFRESH_SECRET);
@@ -47,17 +48,17 @@ exports.authenticateJWT = (req, res, next) => {
         // Re-verify the new access token
         accessPayload = verify(newAccessToken, process.env.JWT_ACCESS_SECRET);
       } else {
-        throw new Error("Invalid Login");
+        throw new Error("2Invalid Login");
       }
     }
 
     if (accessPayload.userId != refreshPayload.userId)
-      throw new Error("Invalid Login");
+      throw new Error("3Invalid Login");
 
     req.user = accessPayload;
   } catch (err) {
     clearJWTCookies(res);
-    let json = { ok: false, error: "Invalid Login" };
+    let json = { ok: false, error: "4Invalid Login" };
 
     if (process.env.DEBUG) json = { ...json, stack: err.stack };
     return res.status(401).json(json);

@@ -15,10 +15,14 @@ export class NavBarComponent {
   ) {}
 
   isAdmin: boolean = false;
+  user: any;
 
   ngOnInit() {
     this.authService.compareRole(true).subscribe((isAdmin) => {
       this.isAdmin = isAdmin.ok;
+    });
+    this.authService.getUser().subscribe((res) => {
+      console.log(res);
     });
   }
 

@@ -124,3 +124,16 @@ exports.signin = async (req, res) => {
     res.status(500).json(json);
   }
 };
+
+exports.getUser = async (req, res) => {
+  try {
+    const uid = req.user.userId;
+    const user = await User.findByID(uid);
+    res.status(200).json({ ok: true, user: user });
+  } catch (err) {
+    let json = { ok: false, error: "Users Error" };
+
+    if (process.env.DEBUG) json = { ...json, stack: err.stack };
+    return res.status(500).json(json);
+  }
+};
