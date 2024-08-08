@@ -135,7 +135,7 @@ module.exports = class User {
   static async findByID(id) {
     const connection = await getConnection();
     try {
-      const query = `SELECT id, name, email, isAdmin, isActive FROM users WHERE id LIKE ?`;
+      const query = `SELECT id, name, email, isAdmin, isActive, photoFileName FROM users WHERE id LIKE ?`;
       const params = [id];
 
       const [rows, _fields] = await connection.execute(query, params);

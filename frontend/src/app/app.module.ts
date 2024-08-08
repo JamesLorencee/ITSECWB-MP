@@ -20,7 +20,6 @@ import { AdminHomeComponent } from './page-schema/admin/home/home.component';
 import { UserHomeComponent } from './page-schema/user/home/home.component';
 import { IncomeLogComponent } from './page-schema/user/income-log/income-log.component';
 import { UserLogsComponent } from './page-schema/admin/user-logs/user-logs.component';
-import { SystemSettingsComponent } from './page-schema/admin/system-settings/system-settings.component';
 
 // NPM Modules
 import { NgIconsModule } from '@ng-icons/core';
@@ -49,7 +48,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     MainTemplateComponent,
     IncomeLogComponent,
     UserLogsComponent,
-    SystemSettingsComponent,
   ],
   imports: [
     BrowserModule,
