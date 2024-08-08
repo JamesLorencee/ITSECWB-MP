@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { getConnection, closeConnection } = require("../util/database");
 const bcrypt = require("bcryptjs");
 const saltRounds = 12;
