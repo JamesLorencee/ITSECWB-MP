@@ -10,13 +10,14 @@ import { FormGroup, FormArray, FormBuilder, FormControl, Validators } from '@ang
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
+
 export class UserHomeComponent {
   constructor(
     private authService: AuthService,
     private expenseService: ExpenseService,
     private router: Router,
     private fb: FormBuilder,
-  ) {}
+  ) { }
 
   // Default Variables
   expenseList: any;
@@ -30,17 +31,17 @@ export class UserHomeComponent {
   submitted = false;
 
   addForm: FormGroup = this.fb.group({
-    addItem: ['', Validators.required],
+    addItem: ['', [Validators.required, Validators.maxLength(36)]],
     addSrc: ['', Validators.required],
     addDate: ['', Validators.required],
-    addAmt: ['', Validators.required],
+    addAmt: ['', [Validators.required, Validators.pattern('^d{1,8}(.d{1,2})?$')]],
   });
 
   editForm: FormGroup = this.fb.group({
-    editItem: ['', Validators.required],
+    editItem: ['', [Validators.required, Validators.maxLength(36)]],
     editSrc: ['', Validators.required],
     editDate: ['', Validators.required],
-    editAmt: ['', Validators.required],
+    editAmt: ['', [Validators.required, Validators.pattern('^d{1,8}(.d{1,2})?$')]],
   });
 
   ngOnInit() {

@@ -19,10 +19,12 @@ export class LoginGuard implements CanActivate {
       map((isLoggedIn: any) => {
         if (isLoggedIn) {
           this.authService.compareRole(true).subscribe((isAdmin) => {
-            if (isAdmin) {
-              this.router.navigate(['/admin']); // Redirect admin to admin dashboard
-            } else {
-              this.router.navigate(['/user']); // Redirect user to user dashboard
+            if (isAdmin.ok) {
+              if (isAdmin.same) {
+                this.router.navigate(['/admin']); // Redirect admin to admin dashboard
+              } else {
+                this.router.navigate(['/user']); // Redirect user to user dashboard
+              }
             }
           });
 
@@ -34,7 +36,7 @@ export class LoginGuard implements CanActivate {
       }),
       catchError(() => {
         // Handle any errors that occur during authentication check
-        console.error('Error checking authentication status');
+        // console.error('Error checking authentication status');
         return of(false); // Can also return true or false based on your error handling strategy
       }),
     );

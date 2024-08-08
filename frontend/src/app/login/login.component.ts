@@ -42,17 +42,15 @@ export class LoginComponent {
     }
 
     this.authService.signin(this.loginForm.value.email, this.loginForm.value.password).subscribe({
-      next: (user) => {
-        if (user.isAdmin) {
-          this.router.navigate(['/admin']); // Redirect admin to admin dashboard
-        } else {
-          this.router.navigate(['/user']); // Redirect user to user dashboard
-        }
+      next: () => {
+        this.authService.compareRole(true).subscribe((isAdmin) => {
+          if (isAdmin) {
+            this.router.navigate(['/admin']); // Redirect admin to admin dashboard
+          } else {
+            this.router.navigate(['/user']); // Redirect user to user dashboard
+          }
+        });
         this.errorMessage = '';
-      },
-      error: (error) => {
-        this.errorMessage = error.error.message;
-        console.error('Error:', error);
       },
     });
   }

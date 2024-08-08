@@ -8,6 +8,7 @@ const uploadSignUp = require("../middleware/multer");
 const rateLimit = require("express-rate-limit");
 const { authenticateJWT } = require("../middleware/jwt");
 const { clearJWTCookies } = require("../models/jwt");
+const { logger } = require("../util/logger");
 
 const rateLimiter = rateLimit({
   windowMs: 15 * 1000, // 15 seconds
@@ -39,8 +40,10 @@ router.get("/is-logged-in", authenticateJWT, (_req, res) => {
  * Logout user
  */
 router.delete("/logout", authenticateJWT, (_req, res) => {
+  const uid = _req.user.userId;
   clearJWTCookies(res);
   res.status(200).json({ ok: true, message: "Logged out Successfully!" });
+  logger.info(`User ${uid} logged out successfully.`);
 });
 
 /**
@@ -78,5 +81,8 @@ router.post(
   ],
   authController.signin
 );
+
+router.get("/getuser", authenticateJWT, authController.getUser);
+router.get("/api/image/:filename", authenticateJWT, authController.getImage);
 
 module.exports = router;

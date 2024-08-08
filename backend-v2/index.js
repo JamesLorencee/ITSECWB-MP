@@ -44,6 +44,8 @@ app.use(xss());
 app.use(cookieParser(process.env.COOKIES_SECRET));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+// // Serve static files from the backend-v2/uploads directory
+// app.use("/uploads", express.static(path.join(__dirname, "backend-v2/uploads")));
 
 const corsOptions = {
   origin: "https://localhost:4200",

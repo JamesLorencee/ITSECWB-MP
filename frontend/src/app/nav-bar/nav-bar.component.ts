@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-nav-bar',
@@ -12,13 +13,24 @@ export class NavBarComponent {
     private authService: AuthService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private sanitizer: DomSanitizer,
   ) {}
 
   isAdmin: boolean = false;
+  user: any;
+  imageUrl: any;
 
   ngOnInit() {
     this.authService.compareRole(true).subscribe((isAdmin) => {
-      this.isAdmin = isAdmin.ok;
+      this.isAdmin = isAdmin.same;
+    });
+    this.authService.getUser().subscribe((res) => {
+      console.log(res);
+      this.user = res.user;
+      this.authService.getImage(this.user.photoFileName).subscribe((blob) => {
+        const objectURL = URL.createObjectURL(blob);
+        this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+      });
     });
   }
 
@@ -37,10 +49,6 @@ export class NavBarComponent {
 
   userLogs() {
     this.router.navigate(['../logs'], { relativeTo: this.activatedRoute });
-  }
-
-  systemSettings() {
-    this.router.navigate(['../settings'], { relativeTo: this.activatedRoute });
   }
 
   logout() {

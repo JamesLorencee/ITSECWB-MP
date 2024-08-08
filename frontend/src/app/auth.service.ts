@@ -54,4 +54,12 @@ export class AuthService {
     });
     return this.http.post(`${this.baseUrl}/signup`, formData);
   }
+
+  getUser(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/getuser`, { withCredentials: true });
+  }
+
+  getImage(fileName: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/api/image/${fileName}`, { responseType: 'blob', withCredentials: true });
+  }
 }

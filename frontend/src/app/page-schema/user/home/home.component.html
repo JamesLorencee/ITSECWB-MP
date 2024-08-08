@@ -109,7 +109,7 @@
           display:
             addForm.get('addItem')!.invalid && submitted ? 'block' : 'none'
         }"
-        >Please input an item.</span
+        >Please input an item that has atleast 1 character and at most 36.</span
       >
     </div>
 
@@ -154,7 +154,7 @@
           display:
             addForm.get('addAmt')!.invalid && submitted ? 'block' : 'none'
         }"
-        >Please input a Price.</span
+        >Please input a Price between 0 to 99999999.99.</span
       >
     </div>
     <hr class="mb-6 mt-2 h-[2px] w-full bg-neutral-300" />
@@ -206,8 +206,7 @@
           display:
             editForm.get('editItem')!.invalid && submitted ? 'block' : 'none'
         }"
-        >Please input an item.</span
-      >
+        >Please input an item that has atleast 1 character and at most 36.</span>
     </div>
     <div class="input-group mb-4">
       <h4 class="text-base font-medium text-neutral-600">Price</h4>
@@ -227,7 +226,7 @@
         [ngStyle]="{
           display: editForm.get('editAmt')!.invalid && submitted ? 'block' : 'none',
         }"
-        >Please input an amount.</span
+        >Please input a Price between 0 to 99999999.99.</span
       >
     </div>
     <div class="input-group mb-4">
