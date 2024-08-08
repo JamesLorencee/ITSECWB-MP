@@ -29,9 +29,6 @@ export class NavBarComponent {
   incomeLog() {
     this.router.navigate(['../incomeLog'], { relativeTo: this.activatedRoute });
   }
-  generateReport() {
-    this.router.navigate(['../generateReport'], { relativeTo: this.activatedRoute });
-  }
 
   // Admin Pages
   userMgmt() {
