@@ -21,8 +21,8 @@ export class AuthService {
     return this.http.delete<any>(`${this.baseUrl}/logout`, { withCredentials: true });
   }
 
-  compareRole(role: boolean): Observable<boolean> {
-    return this.http.get<boolean>(`${this.baseUrl}/authenticate/${role}`, { withCredentials: true }).pipe(
+  compareRole(role: boolean): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/authenticate/${role}`, { withCredentials: true }).pipe(
       catchError((error) => {
         return of(false);
       }),

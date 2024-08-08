@@ -8,7 +8,6 @@ import { RoleGuardService } from './guards/role-guard.guard';
 import { PageSchemaComponent } from './page-schema/page-schema.component';
 import { LoginGuard } from './guards/login-guard.guard';
 import { IncomeLogComponent } from './page-schema/user/income-log/income-log.component';
-import { GenerateReportComponent } from './page-schema/user/generate-report/generate-report.component';
 import { UserLogsComponent } from './page-schema/admin/user-logs/user-logs.component';
 import { SystemSettingsComponent } from './page-schema/admin/system-settings/system-settings.component';
 
@@ -59,12 +58,6 @@ export const routes: Routes = [
       {
         path: 'incomeLog',
         component: IncomeLogComponent,
-        canActivate: [RoleGuardService],
-        data: { isAdmin: false },
-      },
-      {
-        path: 'generateReport',
-        component: GenerateReportComponent,
         canActivate: [RoleGuardService],
         data: { isAdmin: false },
       },

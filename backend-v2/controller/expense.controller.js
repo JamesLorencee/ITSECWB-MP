@@ -11,7 +11,12 @@ exports.get = async (req, res) => {
             ]);
         res.status(200).json({ ok: true, expenseList: expenseList, categoryList: categoryList });
     } catch (err) {
-        res.status(500).json({ ok: false, error: "GET Expense Error" });
+        {
+            let json = { ok: false, error: "Invalid Expense" };
+
+            if (process.env.DEBUG) json = { ...json, stack: err.stack };
+            return res.status(500).json(json);
+        }
     }
 };
 
@@ -34,7 +39,11 @@ exports.add = async (req, res) => {
         const add = await Expense.add(expense);
         res.status(200).json({ ok: true, res: add });
     } catch (err) {
-        res.status(500).json({ ok: false, error: "Add Expense Error" });
+        {  
+            let json = { ok: false, error: "Add Expense Error" };
+            if (process.env.DEBUG) json = { ...json, stack: err.stack };
+            return res.status(500).json(json); 
+        }
     }
 };
 
@@ -45,7 +54,11 @@ exports.edit = async (req, res) => {
         const editExpense = await Expense.edit(id);
         res.status(200).json({ ok: true, editExpense: editExpense });
     } catch (err) {
-        res.status(500).json({ error: "EDIT Expense Error", ok: false });
+        { 
+            let json = { ok: false, error: "Edit Expense Error" };
+            if (process.env.DEBUG) json = { ...json, stack: err.stack };
+            return res.status(500).json(json);
+        }
     }
 };
 
@@ -70,7 +83,11 @@ exports.save = async (req, res) => {
         const save = await Expense.save(expense);
         res.status(200).json({ ok: true, res: save });
     } catch (err) {
-        res.status(500).json({ error: "SAVE Expense Error", ok: false });
+        { 
+            let json = { ok: false, error: "Save Expense Error" };
+            if (process.env.DEBUG) json = { ...json, stack: err.stack };
+            return res.status(500).json(json);
+        }
     }
 };
 
@@ -81,6 +98,10 @@ exports.delete = async (req, res) => {
         const deleteExpense = await Expense.delete(id);
         res.status(200).json({ ok: true, ...deleteExpense });
     } catch (err) {
-        res.status(500).json({ error: "DELETE Expense Error", ok: false });
+        { 
+            let json = { ok: false, error: "Delete Expense Error" };
+            if (process.env.DEBUG) json = { ...json, stack: err.stack };
+            return res.status(500).json(json);
+        }
     }
 };

@@ -18,8 +18,7 @@ export class NavBarComponent {
 
   ngOnInit() {
     this.authService.compareRole(true).subscribe((isAdmin) => {
-      this.isAdmin = isAdmin;
-      console.log(this.isAdmin);
+      this.isAdmin = isAdmin.ok;
     });
   }
 
@@ -29,9 +28,6 @@ export class NavBarComponent {
   }
   incomeLog() {
     this.router.navigate(['../incomeLog'], { relativeTo: this.activatedRoute });
-  }
-  generateReport() {
-    this.router.navigate(['../generateReport'], { relativeTo: this.activatedRoute });
   }
 
   // Admin Pages

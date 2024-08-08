@@ -19,7 +19,6 @@ import { RegisterComponent } from './register/register.component';
 import { AdminHomeComponent } from './page-schema/admin/home/home.component';
 import { UserHomeComponent } from './page-schema/user/home/home.component';
 import { IncomeLogComponent } from './page-schema/user/income-log/income-log.component';
-import { GenerateReportComponent } from './page-schema/user/generate-report/generate-report.component';
 import { UserLogsComponent } from './page-schema/admin/user-logs/user-logs.component';
 import { SystemSettingsComponent } from './page-schema/admin/system-settings/system-settings.component';
 
@@ -49,7 +48,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     PageSchemaComponent,
     MainTemplateComponent,
     IncomeLogComponent,
-    GenerateReportComponent,
     UserLogsComponent,
     SystemSettingsComponent,
   ],
@@ -74,9 +72,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     MatNativeDateModule,
     MatSelectModule,
   ],
-  providers: [
-    provideAnimationsAsync()
-  ],
+  providers: [provideAnimationsAsync()],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

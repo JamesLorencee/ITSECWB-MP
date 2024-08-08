@@ -23,7 +23,6 @@ export class UserLogsComponent {
 
   viewLogs() {
     this.mgmtService.getLogs().subscribe((res) => {
-      console.log(res);
       this.logList = res.logList;
     });
   }
