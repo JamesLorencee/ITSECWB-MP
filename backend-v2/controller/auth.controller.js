@@ -54,7 +54,9 @@ exports.signup = async (req, res) => {
       }
 
       res.status(201).json({ ok: true, message: "User registered!" });
-      logger.info(`User ${uuid} with the Name: ${name}, Email: ${email}, Phone Num: ${phoneNumber} Successfully Registered `);
+      logger.info(
+        `User ${uuid} with the Name: ${name}, Email: ${email}, Phone Num: ${phoneNumber} Successfully Registered `
+      );
     });
   } catch (err) {
     let json = { ok: false, error: "Signup Error" };
@@ -77,20 +79,25 @@ exports.signin = async (req, res) => {
   try {
     const user = await User.find(email);
     if (!user) {
-      let json = { ok: false, error: "Signin Error" };
+      let json = { ok: false, error: "1Signin Error" };
+      logger.error(
+        `Unregistered user attempted to sign-in with email: ${email}`
+      );
 
       return res.status(401).json(json);
     }
     if (!user.isActive) {
-      let json = { ok: false, error: "Signin Error" };
-
+      let json = { ok: false, error: "2Signin Error" };
+      logger.error(`User attempted to sign-in with inactive email: ${email}`);
       return res.status(401).json(json);
     }
 
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-      let json = { ok: false, error: "Signin Error" };
+      console.log(user);
+      let json = { ok: false, error: "3Signin Error" };
+      logger.error(`Login attempt failed with email: ${email}`);
       return res.status(401).json(json);
     }
 
