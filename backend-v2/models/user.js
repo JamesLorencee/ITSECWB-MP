@@ -1,6 +1,6 @@
 const { getConnection, closeConnection } = require("../util/database");
 const bcrypt = require("bcryptjs");
-const saltRounds = 12;
+const saltRounds = 13;
 
 module.exports = class User {
   constructor(name, email, password, phoneNumber, photoFileName) {
