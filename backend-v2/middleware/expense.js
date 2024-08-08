@@ -15,8 +15,7 @@ exports.addExpenseValidation = async (req, res, next) => {
     }
 
     // Validate expenseAmt
-    const amtPattern = /^(?!0\d)\d{1,8}(\.\d{1,2})?$/;
-    if (!amtPattern.test(expenseAmt) || Number(expenseAmt) < 0 || Number(expenseAmt) > 99999999.99) {
+    if (Number(expenseAmt) < 0 || Number(expenseAmt) > 99999999.99) {
         return res.status(400).json({ ok: false, error: 'Invalid expenseAmt. Must be between 0 and 99999999.99.' });
     }
 
