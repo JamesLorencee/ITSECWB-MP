@@ -22,10 +22,10 @@ exports.get = async (req, res) => {
 
 exports.add = async (req, res) => {
     const uid = req.user.userId;
-    const expenseDate = req.body.expenseDate;
-    const expenseItem = req.body.expenseItem;
-    const expenseAmt = req.body.expenseAmt;
-    const expenseSrc = req.body.expenseSrc;
+    const expenseDate = req.body.expenseDate;// check valid date
+    const expenseItem = req.body.expenseItem;// check val if char has 1 to 36
+    const expenseAmt = req.body.expenseAmt;// check valid amount from 0 to 99999999.99
+    const expenseSrc = req.body.expenseSrc;// check valid src
 
     try {
         const expense = {
@@ -40,10 +40,10 @@ exports.add = async (req, res) => {
         res.status(200).json({ ok: true, res: add });
         logger.info(`User ${uid} Successfully Added Expense Item: ${expenseItem}, Amount: ${expenseAmt}, Source: ${expenseSrc}`);
     } catch (err) {
-        {  
+        {
             let json = { ok: false, error: "Add Expense Error" };
             if (process.env.DEBUG) json = { ...json, stack: err.stack };
-            return res.status(500).json(json); 
+            return res.status(500).json(json);
         }
     }
 };
@@ -57,7 +57,7 @@ exports.edit = async (req, res) => {
         res.status(200).json({ ok: true, editExpense: editExpense });
         logger.info(`User ${uid} Successfully Edited Expense with ID of ${id}`);
     } catch (err) {
-        { 
+        {
             let json = { ok: false, error: "Edit Expense Error" };
             if (process.env.DEBUG) json = { ...json, stack: err.stack };
             return res.status(500).json(json);
@@ -87,7 +87,7 @@ exports.save = async (req, res) => {
         res.status(200).json({ ok: true, res: save });
         logger.info(`User ${uid} Successfully Edited Expense Item: ${expenseItem}, Amount: ${expenseAmt}, Source: ${expenseSrc}`);
     } catch (err) {
-        { 
+        {
             let json = { ok: false, error: "Save Expense Error" };
             if (process.env.DEBUG) json = { ...json, stack: err.stack };
             return res.status(500).json(json);
@@ -104,7 +104,7 @@ exports.delete = async (req, res) => {
         res.status(200).json({ ok: true, ...deleteExpense });
         logger.info(`User ${uid} Successfully Deleted Expense ${id}`);
     } catch (err) {
-        { 
+        {
             let json = { ok: false, error: "Delete Expense Error" };
             if (process.env.DEBUG) json = { ...json, stack: err.stack };
             return res.status(500).json(json);
