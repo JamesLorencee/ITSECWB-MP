@@ -67,8 +67,8 @@
             }
           },
           "options": {
-            "sslKey": "../backend/server.key",
-            "sslCert": "../backend/server.cert",
+            "sslKey": "../backend-v2/server.key",
+            "sslCert": "../backend-v2/server.cert",
             "ssl": true
           },
           "defaultConfiguration": "development"
