@@ -1,6 +1,12 @@
 # ITSECWB Machine Project
 This project aims to test the knowledge of student in creating a secure web application.
 
+## Members
+- Ang, Elliamae
+- Lee, Chyle Andrei
+- Seril, James Lorence
+- Silvestre, Franczeska Margaux
+
 ## Prerequisite
 - Angular CLI
 - Node JS
