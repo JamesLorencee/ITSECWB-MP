@@ -1,5 +1,4 @@
 # ITSECWB Machine Project
----
 This project aims to test the knowledge of student in creating a secure web application.
 
 ## Prerequisite
@@ -8,7 +7,6 @@ This project aims to test the knowledge of student in creating a secure web appl
 - MySQL
   
 ## How to use
----
 ### Frontend
 1. Open the frontend folder
 2. Run ```npm install```
