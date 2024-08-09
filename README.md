@@ -1,20 +1,20 @@
-#ITSECWB Machine Project
+# ITSECWB Machine Project
 ---
 This project aims to test the knowledge of student in creating a secure web application.
 
-##Prerequisite
+## Prerequisite
 - Angular CLI
 - Node JS
 - MySQL
   
-##How to use
+## How to use
 ---
-###Frontend
+### Frontend
 1. Open the frontend folder
 2. Run ```npm install```
 3. Run ng serve --open
 
-###Backend
+### Backend
 1. Set up the environment variables such as database connection and such.
 2. Run ```npm install```
 3. Run script depending on the environment:
