@@ -1,4 +1,4 @@
-# ITSECWB Machine Project
+# MakeCents is an IT Secure Web Development Machine Project
 
 This project aims to test the knowledge of student in creating a secure web application.
 
